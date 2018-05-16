@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	 <!--本Project識別-->
+	<groupId>com.chok</groupId>
+	<artifactId>chok-parent</artifactId>
+	<version>1.0</version>
+	<!--表示打包Project的型態,可能為Jar、war、ear或pom，若是使用了android 則為apk-->
+	<packaging>pom</packaging>
+	<!--以下是給工具看的,主要是本Project的資訊-->
+	<name>chok-parent</name>
+	<!-- 指定JDK -->
+	<profiles>
+		<profile>     
+		    <id>jdk-1.8</id>     
+		    <activation>     
+		        <activeByDefault>true</activeByDefault>     
+		        <jdk>1.8</jdk>     
+		    </activation>     
+		    <properties>     
+		        <maven.compiler.source>1.8</maven.compiler.source>     
+		        <maven.compiler.target>1.8</maven.compiler.target>     
+		        <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>     
+		    </properties>     			
+	    </profile>
+	</profiles>
+    
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.7.RELEASE</version>
+	</parent>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring.boot.version>1.5.7.RELEASE</spring.boot.version>
+		<mybatis.spring.boot.version>1.3.0</mybatis.spring.boot.version>
+		<druid.spring.boot.version>1.1.2</druid.spring.boot.version>
+		<redis.spring.boot.version>1.4.7.RELEASE</redis.spring.boot.version>
+		<poi.version>3.15</poi.version>
+		<cxf.version>3.2.0</cxf.version>
+	</properties>
+	
+	<dependencies>
+		<!-- spring-boot WEB支持 -->
+		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId></dependency>
+		<!-- spring-boot-security 
+		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-security</artifactId></dependency>
+		-->
+		<!-- spring-boot thymeleaf 
+		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-thymeleaf</artifactId></dependency>
+		-->
+		<!-- spring-boot cxf -->
+		<dependency><groupId>org.apache.cxf</groupId><artifactId>cxf-spring-boot-starter-jaxws</artifactId><version>${cxf.version}</version></dependency>
+		<!-- spring-boot 热部署 -->
+		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-devtools</artifactId></dependency>
+		<!-- spring-boot 打包时，把内嵌的tomcat排除掉 -->
+		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-tomcat</artifactId><scope>provided</scope></dependency>
+		<!-- spring-boot 用于编译jsp -->
+		<dependency><groupId>org.apache.tomcat.embed</groupId><artifactId>tomcat-embed-jasper</artifactId><scope>provided</scope></dependency>
+		<!-- spring-boot jsp页面使用jstl标签-->
+		<dependency><groupId>javax.servlet</groupId><artifactId>jstl</artifactId></dependency>
+		<!-- spring-boot mybatis -->
+		<dependency><groupId>org.mybatis.spring.boot</groupId><artifactId>mybatis-spring-boot-starter</artifactId><version>${mybatis.spring.boot.version}</version></dependency>
+		<!-- spring-boot druid -->
+		<dependency><groupId>com.alibaba</groupId><artifactId>druid-spring-boot-starter</artifactId><version>${druid.spring.boot.version}</version></dependency>
+		<!-- spring-boot atomikos 分布式事务 -->
+		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-jta-atomikos</artifactId></dependency>
+	    <dependency><groupId>com.atomikos</groupId><artifactId>transactions-osgi</artifactId><version>3.9.3</version></dependency>
+        <!-- Spring Boot Redis -->
+        <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-redis</artifactId><version>${redis.spring.boot.version}</version></dependency>
+		<!-- db driver myql-->
+		<dependency><groupId>mysql</groupId><artifactId>mysql-connector-java</artifactId></dependency>
+		<!-- db driver oracle
+		 添加至本地jar命令：mvn install:install-file -Dfile=ojdbc14.jar -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=1.0 -Dpackaging=jar
+		<dependency><groupId>com.oracle</groupId><artifactId>ojdbc14</artifactId><version>1.0</version></dependency>
+		-->
+		<!-- 其他工具包 -->
+		<dependency><groupId>com.alibaba</groupId><artifactId>fastjson</artifactId><version>1.2.4</version></dependency>
+		<dependency><groupId>commons-logging</groupId><artifactId>commons-logging</artifactId><version>1.2</version></dependency>
+		<dependency><groupId>commons-net</groupId><artifactId>commons-net</artifactId><version>3.4</version></dependency>
+		<dependency><groupId>commons-io</groupId><artifactId>commons-io</artifactId><version>2.5</version></dependency>
+		<dependency><groupId>commons-fileupload</groupId><artifactId>commons-fileupload</artifactId><version>1.3.2</version></dependency>
+		<dependency><groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId></dependency>
+		<dependency><groupId>javax.servlet.jsp</groupId><artifactId>javax.servlet.jsp-api</artifactId><version>2.3.1</version></dependency>
+		<dependency><groupId>org.apache.httpcomponents</groupId><artifactId>httpclient</artifactId></dependency>
+		<dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.6</version></dependency>
+		<dependency><groupId>ognl</groupId><artifactId>ognl</artifactId><version>3.2.3</version></dependency>
+        <!-- poi -->
+        <dependency><groupId>org.apache.poi</groupId><artifactId>poi</artifactId><version>${poi.version}</version></dependency>
+		<dependency><groupId>org.apache.poi</groupId><artifactId>poi-ooxml</artifactId><version>${poi.version}</version></dependency>
+		<dependency><groupId>org.apache.poi</groupId><artifactId>poi-ooxml-schemas</artifactId><version>${poi.version}</version></dependency>
+		<dependency><groupId>org.apache.poi</groupId><artifactId>poi-scratchpad</artifactId><version>${poi.version}</version></dependency>
+		<!-- cas client  -->
+		<dependency><groupId>org.jasig.cas.client</groupId><artifactId>cas-client-core</artifactId><version>3.4.1</version><exclusions><exclusion><groupId>javax.servlet</groupId><artifactId>servlet-api</artifactId></exclusion></exclusions></dependency>
+	</dependencies>
+	
+	<modules>
+		<module>chok-common</module>
+		<module>chok-util</module>
+		<module>chok-devwork</module>
+		<module>chok-cas-client</module>
+		<module>chok-sso-client</module>
+		<module>chok-security</module>
+	</modules>
+	
+	<build>
+		<plugins>
+			<plugin>    
+			    <groupId>org.apache.maven.plugin</groupId>    
+			    <artifactId>maven-compiler-plugin</artifactId>    
+			    <version>2.1</version>    
+			    <configuration>    
+			        <skip>true</skip>    
+			    </configuration>    
+			</plugin>    
+			<plugin>    
+			    <groupId>org.apache.maven.plugins</groupId>    
+			    <artifactId>maven-surefire-plugin</artifactId>    
+			    <configuration>    
+			        <skip>true</skip>    
+			    </configuration>
+			</plugin> 
+		</plugins>
+	</build>
+</project>
