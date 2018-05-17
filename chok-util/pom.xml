@@ -4,29 +4,25 @@
 	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
+	<artifactId>chok-util</artifactId>
+	<name>chok-util</name>
+	<packaging>jar</packaging>
+	
 	<parent>
 		<groupId>com.chok</groupId>
 		<artifactId>chok-parent</artifactId>
 		<version>1.0</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<artifactId>chok-util</artifactId>
-	<name>chok-util</name>
-	<packaging>jar</packaging>
-	<url>http://maven.apache.org</url>
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	
 	<dependencies>
-		<dependency>
-			<groupId>com.chok</groupId>
-			<artifactId>chok-common</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+		<!-- chok -->
+		<dependency><groupId>com.chok</groupId><artifactId>chok-common</artifactId></dependency>
+		<!-- junit -->
+		<dependency><groupId>junit</groupId><artifactId>junit</artifactId><scope>test</scope></dependency>
 	</dependencies>
 </project>
