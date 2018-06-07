@@ -20,6 +20,10 @@
 	</properties>
 	
 	<dependencies>
+		<!-- spring-boot WEB支持 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
         <!-- poi -->
         <dependency><groupId>org.apache.poi</groupId><artifactId>poi</artifactId></dependency>
 		<dependency><groupId>org.apache.poi</groupId><artifactId>poi-ooxml</artifactId></dependency>
