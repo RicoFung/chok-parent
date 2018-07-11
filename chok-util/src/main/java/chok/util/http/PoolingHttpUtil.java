@@ -5,6 +5,8 @@ import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,6 +46,8 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSONObject;
 
 public class PoolingHttpUtil
 {
@@ -211,6 +215,11 @@ public class PoolingHttpUtil
 		}
 	}
 
+	/**
+	 * 设置POST请求参数
+	 * @param httpost
+	 * @param params
+	 */
 	private static void setPostParams(HttpPost httpost, Map<String, Object> params)
 	{
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
@@ -229,13 +238,18 @@ public class PoolingHttpUtil
 		}
 	}
 	
+	/**
+	 * 设置POST请求JSON参数
+	 * @param httpost
+	 * @param jsonParams
+	 */
 	private static void setPostJsonParams(HttpPost httpost, String jsonParams)
 	{
 	    httpost.setHeader("Accept", "application/json");
 	    httpost.setHeader("Content-type", "application/json");
 		try
 		{
-			StringEntity entity = new StringEntity(jsonParams);
+			StringEntity entity = new StringEntity(jsonParams, "UTF-8");
 			httpost.setEntity(entity);
 		}
 		catch (Exception e)
@@ -243,17 +257,57 @@ public class PoolingHttpUtil
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * 设置请求头-POST
+	 * @param httppost
+	 * @param reqHeaderKV
+	 */
+	private static void setReqHeader(HttpPost httppost, Map<String, String> reqHeaderKV)
+	{
+		for (Map.Entry<String, String> entry : reqHeaderKV.entrySet()) 
+		{
+			httppost.setHeader(entry.getKey(), entry.getValue());
+		}
+	}
+	
+	/**
+	 * 设置请求头-GET
+	 * @param httpget
+	 * @param reqHeaderKV
+	 */
+	private static void setReqHeader(HttpGet httpget, Map<String, String> reqHeaderKV)
+	{
+		for (Map.Entry<String, String> entry : reqHeaderKV.entrySet()) 
+		{
+			httpget.setHeader(entry.getKey(), entry.getValue());
+		}
+	}
 
 	/**
-	 * POST请求URL获取内容
+	 * POST-JSON请求
 	 * @param url
 	 * @param jsonParams
 	 * @return
 	 * @throws IOException
 	 */
-	public static String post(String url, String jsonParams) throws IOException
+	public static String postJson(String url, String jsonParams) throws IOException
+	{
+		return postJson(url, jsonParams, null);
+	}
+	
+	/**
+	 * POST-JSON请求
+	 * @param url
+	 * @param jsonParams
+	 * @param reqHeaderKV
+	 * @return
+	 * @throws IOException
+	 */
+	public static String postJson(String url, String jsonParams, Map<String, String> reqHeaderKV) throws IOException
 	{
 		HttpPost httppost = new HttpPost(url);
+		setReqHeader(httppost, reqHeaderKV);
 		config(httppost);
 		setPostJsonParams(httppost, jsonParams);
 		CloseableHttpResponse response = null;
@@ -283,8 +337,51 @@ public class PoolingHttpUtil
 		}
 	}
 	
+	/**
+	 * POST-JSON请求
+	 * @param url
+	 * @param jsonParams
+	 * @param reqHeaderKV
+	 * @param cookieStore
+	 * @return
+	 * @throws IOException
+	 */
+	public static String postJson(String url, String jsonParams, Map<String, String> reqHeaderKV, BasicCookieStore cookieStore) throws IOException
+	{
+		HttpPost httppost = new HttpPost(url);
+		setReqHeader(httppost, reqHeaderKV);
+		config(httppost);
+		setPostJsonParams(httppost, jsonParams);
+		CloseableHttpResponse response = null;
+		try
+		{
+			response = getHttpClient(url, cookieStore).execute(httppost, HttpClientContext.create());
+			HttpEntity entity = (HttpEntity) response.getEntity();
+			String result = EntityUtils.toString(entity, "utf-8");
+			EntityUtils.consume(entity);
+			return result;
+		}
+		catch (Exception e)
+		{
+			throw e;
+		}
+		finally
+		{
+			try
+			{
+				if (response != null)
+					response.close();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public static CloseableHttpResponse post(String url, String jsonParams, BasicCookieStore cookieStore) throws IOException
 	{
+		
 		HttpPost httppost = new HttpPost(url);
 		config(httppost);
 		setPostJsonParams(httppost, jsonParams);
@@ -347,7 +444,7 @@ public class PoolingHttpUtil
 	}
 
 	/**
-	 * GET请求URL获取内容
+	 * GET请求
 	 * 
 	 * @param url
 	 * @return
@@ -382,5 +479,111 @@ public class PoolingHttpUtil
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * GET请求
+	 * @param url
+	 * @param reqHeaderKV
+	 * @return
+	 */
+	public static String get(String url, Map<String, String> reqHeaderKV)
+	{
+		HttpGet httpget = new HttpGet(url);
+		setReqHeader(httpget, reqHeaderKV);
+		config(httpget);
+		CloseableHttpResponse response = null;
+		try
+		{
+			response = getHttpClient(url, null).execute(httpget, HttpClientContext.create());
+			HttpEntity entity = response.getEntity();
+			String result = EntityUtils.toString(entity, "utf-8");
+			EntityUtils.consume(entity);
+			return result;
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				if (response != null)
+					response.close();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 中文转unicode
+	 * @param str
+	 * @return
+	 */
+	public static String chinaToUnicode(String str)
+	{
+		String result = "";
+		for (int i = 0; i < str.length(); i++)
+		{
+			int chr1 = (char) str.charAt(i);
+			if (chr1 >= 19968 && chr1 <= 171941)
+			{// 汉字范围 \u4e00-\u9fa5 (中文)
+				result += "\\u" + Integer.toHexString(chr1);
+			}
+			else
+			{
+				result += str.charAt(i);
+			}
+		}
+		return result;
+	}
+	
+	public static void main(String args[])
+	{
+		JSONObject jsonParams = new JSONObject();
+		jsonParams.put("storeid", "SHOP-00001");
+		jsonParams.put("memberid", "E180000003912");
+		jsonParams.put("membercardid", "中文");
+		jsonParams.put("mobilephone", "");
+		//
+		try
+		{
+			String url = "http://10.12.203.6:8011/CrmSB/Sell/Coupon/ProxyServices/CrmCouponValidateRestfulProxy/couponticket(53F7E127F73E469DB63E11E17360DE11)/Check()";
+			// 认证
+			String basicAuth = "Moco_ErpPos01:soaosb01";
+			String token = Base64.getEncoder().encodeToString((basicAuth).getBytes("UTF-8"));
+			Map<String, String> headerKV = new HashMap<String, String>();
+			headerKV.put("Authorization", "Basic "+token);
+			// 1.esbInfo
+			JSONObject jsonEsbInfo = new JSONObject();
+			jsonEsbInfo.put("instId", "string");
+			jsonEsbInfo.put("requestTime", "string");
+			jsonEsbInfo.put("attr1", "string");
+			jsonEsbInfo.put("attr2", "string");
+			jsonEsbInfo.put("attr3", "string");
+			// 2.requestInfo
+			JSONObject jsonRequestInfo = jsonParams==null?new JSONObject():jsonParams;
+			// 3.最终json
+			JSONObject jsonFinal = new JSONObject();
+			jsonFinal.put("esbInfo", jsonEsbInfo);
+			jsonFinal.put("requestInfo", jsonRequestInfo);
+			// 打印参数
+			log.info("### >>> basicAuth: " + basicAuth);
+			log.info("### >>> token: " + token);
+			log.info("### >>> url: " + url);
+			log.info("### >>> jsonFinal: " + jsonFinal.toString());
+			
+			String s = PoolingHttpUtil.postJson(url, jsonFinal.toJSONString(), headerKV);
+			log.info("### <<< " + s);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 }
