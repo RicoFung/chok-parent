@@ -133,4 +133,9 @@ public abstract class BaseDao<T,PK>
 	{
 		return this.getSqlSession().selectList(getStatementName(statementName), param);
 	}
+	
+	public int getCount(String statementName, Object param)
+	{
+		return this.getSqlSession().selectOne(getStatementName(statementName), param);
+	}
 }
