@@ -80,6 +80,16 @@ public class BaseController<T>
 	
 	public void exp(List<T> list, String exportType)
 	{
+		exp(list,
+			req.getParameter("fileName"), 
+			req.getParameter("title"), 
+			req.getParameter("headerNames"), 
+			req.getParameter("dataColumns"), 
+			exportType);
+	}
+	
+	public void exp(List<T> list, String fileName, String title, String headerNames, String dataColumns, String exportType)
+	{
 		ByteArrayOutputStream ba = null;
 		ServletOutputStream out = null;
 		try
@@ -88,25 +98,25 @@ public class BaseController<T>
 			{
 				ba = new ByteArrayOutputStream();
 				ba = (ByteArrayOutputStream) POIUtil.writeExcel(ba, 
-																req.getParameter("fileName"), 
-																req.getParameter("title"), 
-																req.getParameter("headerNames"), 
-																req.getParameter("dataColumns"), 
-																list);
+						fileName, 
+						title, 
+						headerNames, 
+						dataColumns, 
+						list);
 				
 				response.reset();// 清空输出流
 				response.setHeader("Content-disposition", "attachment; filename="
-														+ req.getParameter("fileName")
-														+ "_"
-														+ TimeUtil.formatDate(new Date(), "yyyyMMdd_HHmmss") + "." +"xlsx");
+						+ req.getParameter("fileName")
+						+ "_"
+						+ TimeUtil.formatDate(new Date(), "yyyyMMdd_HHmmss") + "." +"xlsx");
 				if(exportType.equals("xlsx"))
 					response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8");// 定义输出类型:xlsx
 				else
 					response.setContentType("application/msexcel;charset=UTF-8");// 定义输出类型:xls
-					response.setContentLength(ba.size());
-					out = response.getOutputStream();
-					ba.writeTo(out);
-					out.flush();
+				response.setContentLength(ba.size());
+				out = response.getOutputStream();
+				ba.writeTo(out);
+				out.flush();
 			}
 			finally 
 			{
