@@ -78,7 +78,7 @@ public class BaseController<T>
 		}
 	}
 	
-	public void exp(List<T> list, String exportType)
+	public void exp(List<?> list, String exportType)
 	{
 		exp(list,
 			req.getParameter("fileName"), 
@@ -88,7 +88,7 @@ public class BaseController<T>
 			exportType);
 	}
 	
-	public void exp(List<T> list, String fileName, String title, String headerNames, String dataColumns, String exportType)
+	public void exp(List<?> list, String fileName, String title, String headerNames, String dataColumns, String exportType)
 	{
 		ByteArrayOutputStream ba = null;
 		ServletOutputStream out = null;
@@ -106,7 +106,7 @@ public class BaseController<T>
 				
 				response.reset();// 清空输出流
 				response.setHeader("Content-disposition", "attachment; filename="
-						+ req.getParameter("fileName")
+						+ fileName
 						+ "_"
 						+ TimeUtil.formatDate(new Date(), "yyyyMMdd_HHmmss") + "." +"xlsx");
 				if(exportType.equals("xlsx"))

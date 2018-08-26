@@ -1,5 +1,9 @@
 package chok.util;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * 将long、int、float数组转化为Long、Integer、FLoat数组
  */
@@ -34,15 +38,28 @@ public class CollectionUtil
 		}
 		return arr;
 	}
-	
+
 	public static Long[] strToLongArray(String str, String separator)
 	{
 		String[] sArr = str.split(",");
 		Long[] lArr = new Long[sArr.length];
-		for(int i = 0; i<sArr.length; i++)
+		for (int i = 0; i < sArr.length; i++)
 		{
 			lArr[i] = Long.valueOf(sArr[i]);
 		}
 		return lArr;
+	}
+
+	public static List<Object> getKey(Map<?, ?> map, Object value)
+	{
+		List<Object> keyList = new ArrayList<>();
+		for (Object key : map.keySet())
+		{
+			if (map.get(key).equals(value))
+			{
+				keyList.add(key);
+			}
+		}
+		return keyList;
 	}
 }

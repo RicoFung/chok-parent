@@ -115,6 +115,7 @@ public class POIUtil
 		{
 			XSSFWorkbook wbook = new XSSFWorkbook();
 			XSSFSheet wsheet = wbook.createSheet(sheetName);
+			wsheet.setDefaultColumnWidth(50);
 			XSSFCellStyle titleCellStyle = getTitleStyle(wbook);
 			XSSFCellStyle headerCellStyle = getHeaderStyle(wbook);
 			XSSFCellStyle contentCellStyle = getContentStyle(wbook);
@@ -129,7 +130,7 @@ public class POIUtil
 			if (dataColumn != null && dataColumn.length() > 0)
 				dataColumnArray = dataColumn.split(",");
 			// 写入标题
-			if (title != null)
+			if (title != null && !title.equals("") && title.length()>0)
 			{
 				wsheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headerNameArray.length - 1));
 				XSSFCell c = wsheet.createRow(writingRow).createCell(0);
