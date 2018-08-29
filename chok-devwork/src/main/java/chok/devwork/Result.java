@@ -6,7 +6,7 @@ import java.util.Map;
 public class Result 
 {
 	private boolean success = true;
-	private String msg;
+	private String msg = "";
 	private Map<Object,Object> data = new HashMap<Object,Object>();
 	
 	public boolean isSuccess()
