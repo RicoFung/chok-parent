@@ -1,5 +1,6 @@
 package chok.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -94,5 +95,25 @@ public class TimeUtil
 	public static Date convertString(String value)
 	{
 		return convertString(value, "yyyy-MM-dd HH:mm:ss");
+	}
+
+	/**
+	 * 切换日期格式, 如：dd-MMM-yy（英国） 转 yyyy-MM-dd（中国）
+	 * @param dateString
+	 * @param dateFormatFm
+	 * @param localeFm
+	 * @param dateFormatTo
+	 * @param localeTo
+	 * @return String
+	 * @throws ParseException
+	 */
+	public static String toggleFormat(String dateString, String dateFormatFm, Locale localeFm, String dateFormatTo, Locale localeTo) throws ParseException
+	{
+		SimpleDateFormat sdfFm = new SimpleDateFormat(dateFormatFm, localeFm);
+		SimpleDateFormat sdfTo = new SimpleDateFormat(dateFormatTo, localeTo);
+		
+		Date date = sdfFm.parse(dateString);
+		String result =sdfTo.format(date);
+		return result;
 	}
 }
