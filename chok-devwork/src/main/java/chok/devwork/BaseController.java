@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.alibaba.fastjson.JSON;
@@ -27,7 +25,6 @@ public class BaseController<T>
 	protected MyReq req;
 	protected Result result;
 	private PrintWriter out;
-	protected static Logger log = LoggerFactory.getLogger(BaseController.class.getName());
 	
 	@ModelAttribute
 	public void BaseInitialization(HttpServletRequest request, HttpServletResponse response)
