@@ -641,7 +641,12 @@ public class EncryptionUtil
 			KeyGenerator keygen = KeyGenerator.getInstance("AES");
 			// 2.根据ecnodeRules规则初始化密钥生成器
 			// 生成一个128位的随机源,根据传入的字节数组
-			keygen.init(128, new SecureRandom(key.getBytes()));
+			// 兼容window/linux
+            SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+            secureRandom.setSeed(key.getBytes());
+            keygen.init(128, secureRandom);
+            // 不兼容window/linux
+//			keygen.init(128, new SecureRandom(key.getBytes())); 
 			// 3.产生原始对称密钥
 			/*
 			 * javax.crypto 接口 SecretKey 所有超级接口： Key, Serializable SecretKey public
@@ -651,7 +656,7 @@ public class EncryptionUtil
 			 * getFormat）返回字符串 RAW，并返回作为 getEncoded 方法调用结果的原始密钥字节。 （getFormat 和 getEncoded
 			 * 方法继承自 java.security.Key 父接口。） 常用方法： byte[] getEncoded()
 			 * 返回基本编码格式的密钥，如果此密钥不支持编码，则返回 null。
-			 * 
+			 *
 			 */
 			SecretKey original_key = keygen.generateKey();
 			// 4.获得原始 对称密钥 的字节数组
@@ -669,7 +674,7 @@ public class EncryptionUtil
 			 * Cryptographic Extension (JCE) 框架的核心。 为创建 Cipher 对象，应用程序调用 Cipher 的
 			 * getInstance 方法并将所请求转换 的名称传递给它。 还可以指定提供者的名称（可选）。 常用方法 byte[] doFinal()
 			 * 结束多部分加密或解密操作（具体取决于此 Cipher 的初始化方式）。
-			 * 
+			 *
 			 */
 			Cipher cipher = Cipher.getInstance("AES");
 			// 7.初始化密码器，第一个参数为加密(Encrypt_mode)或者解密解密(Decrypt_mode)操作，第二个参数为使用的KEY
@@ -699,7 +704,12 @@ public class EncryptionUtil
 			KeyGenerator keygen = KeyGenerator.getInstance("AES");
 			// 2.根据ecnodeRules规则初始化密钥生成器
 			// 生成一个128位的随机源,根据传入的字节数组
-			keygen.init(128, new SecureRandom(key.getBytes()));
+			// 兼容window/linux
+            SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+            secureRandom.setSeed(key.getBytes());
+            keygen.init(128, secureRandom);
+            // 不兼容window/linux
+//			keygen.init(128, new SecureRandom(key.getBytes())); 
 			// 3.产生原始对称密钥
 			SecretKey original_key = keygen.generateKey();
 			// 4.获得原始对称密钥的字节数组
@@ -727,7 +737,7 @@ public class EncryptionUtil
 		// 如果有错就返加nulll
 		return null;
 	}
-    
+
 	public static void main(String[] args) throws Exception
 	{
 		// 测试
@@ -738,8 +748,10 @@ public class EncryptionUtil
 		// System.out.println(EncryptionUtil.decodeDes("F922DDDE56405DDA437D4F5C31EF10CDAC679CB09EC88998A533FC7979F8244B",
 		// "22"));
 
-		System.out.println(encodeAES("MAI0030000099", "moco"));
-//		System.out.println(decodeAES("lteGRtNV57UCTliiBNWqgw==", "moco"));
-		System.out.println(decodeAES("E+2u5B+IcrS7mrYXpZQPRA==", "moco"));
+		 System.out.println(encodeAES("MAI0030000042", "moco"));
+		// System.out.println(encodeAES("MAI0030000042", "moco"));
+		// System.out.println(encodeAES("MAI0030000042", "moco"));
+		// System.out.println(decodeAES("lteGRtNV57UCTliiBNWqgw==", "moco"));
+		System.out.println(decodeAES("LNJDgP3SfL5PSgQwegMjCg==", "moco"));
 	}
 }
