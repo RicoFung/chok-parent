@@ -55,9 +55,8 @@
 		<!-- spring-boot-security 
 		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-security</artifactId></dependency>
 		-->
-		<!-- spring-boot thymeleaf 
+		<!-- spring-boot thymeleaf -->
 		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-thymeleaf</artifactId></dependency>
-		-->
 		<!-- spring-boot 热部署 -->
 		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-devtools</artifactId></dependency>
 		<!-- spring-boot 打包时，把内嵌的tomcat排除掉 -->
@@ -70,6 +69,8 @@
 		<dependency><groupId>org.mybatis.spring.boot</groupId><artifactId>mybatis-spring-boot-starter</artifactId><version>${mybatis.spring.boot.version}</version></dependency>
         <!-- Spring Boot Redis -->
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-redis</artifactId><version>${redis.spring.boot.version}</version></dependency>
+		<!-- spring-boot test -->
+		<dependency><groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency>
 		<!-- 其他工具包 -->
 		<dependency><groupId>com.alibaba</groupId><artifactId>fastjson</artifactId><version>1.2.46</version></dependency>
 		<dependency><groupId>commons-logging</groupId><artifactId>commons-logging</artifactId><version>1.2</version></dependency>
@@ -82,8 +83,9 @@
 		<dependency><groupId>org.apache.httpcomponents</groupId><artifactId>httpclient</artifactId></dependency>
 		<dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId></dependency>
 		<dependency><groupId>ognl</groupId><artifactId>ognl</artifactId><version>3.2.3</version></dependency>
-		<!-- junit -->
+		<!-- junit
 		<dependency><groupId>junit</groupId><artifactId>junit</artifactId><scope>test</scope></dependency>
+		 -->
 	</dependencies>
 
 	<dependencyManagement>
