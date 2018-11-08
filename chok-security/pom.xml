@@ -24,5 +24,10 @@
 		<!-- chok -->
 		<dependency><groupId>com.chok</groupId><artifactId>chok-common</artifactId></dependency>
 		<dependency><groupId>com.chok</groupId><artifactId>chok-util</artifactId></dependency>
+		
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
 	</dependencies>
 </project>
