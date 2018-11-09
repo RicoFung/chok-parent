@@ -39,6 +39,7 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 		resRolesMap.put("/error", roles);
 		resRolesMap.put("/admin/home/**", roles);
 		resRolesMap.put("/admin/category/query", roles);
+		resRolesMap.put("/admin/category/query2", roles);
 		resRolesMap.put("/admin/model/query", roles);
 		
 //		Collection<ConfigAttribute> roles2 = new ArrayList<ConfigAttribute>();

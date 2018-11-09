@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.alibaba.fastjson.JSON;
 
+import chok.common.RestResult;
 import chok.util.POIUtil;
 import chok.util.TimeUtil;
 
@@ -23,7 +24,7 @@ public class BaseController<T>
 	protected HttpServletResponse response;
 	protected HttpSession session;
 	protected MyReq req;
-	protected Result result;
+	protected RestResult result;
 	private PrintWriter out;
 	
 	@ModelAttribute
@@ -34,7 +35,7 @@ public class BaseController<T>
 		this.response.setCharacterEncoding("UTF-8");
 		this.session = request.getSession();
 		this.req = new MyReq(request);
-		this.result = new Result();
+		this.result = new RestResult();
 	}
 	
 	public void put(String key, Object value)

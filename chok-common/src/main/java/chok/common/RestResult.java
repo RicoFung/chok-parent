@@ -1,16 +1,9 @@
-package chok.devwork;
+package chok.common;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * 
- * @description 请使用chok.common.RestResult代替
- * @author rico.fung
- *
- */
-@Deprecated
-public class Result 
+public class RestResult 
 {
 	private boolean success = true;
 	private String msg = "";
