@@ -29,13 +29,15 @@ public class MyAccessDeniedHandler implements AccessDeniedHandler
 		{
 			if (ajaxRequestMatcher.matches(request))
 			{
-				log.info("(ajax: " + request.getRequestURI().trim() + ")(403)(" + accessDeniedException.getMessage() + ")");
+				log.error("(ajax)(403)(" + accessDeniedException.getMessage() + ")");
+				response.sendError(HttpServletResponse.SC_FORBIDDEN, accessDeniedException.getMessage());
 			}
 			else
 			{
-				log.info("(!ajax: " + request.getRequestURI().trim() + ")(403)(" + accessDeniedException.getMessage() + ")");
+				log.error("(!ajax)(403)(" + accessDeniedException.getMessage() + ")");
+				request.setAttribute("msg", accessDeniedException.getMessage());
+				request.getRequestDispatcher("/error/403").forward(request, response);
 			}
-			response.sendError(HttpServletResponse.SC_FORBIDDEN, accessDeniedException.getMessage());
 		}
 	}
 }

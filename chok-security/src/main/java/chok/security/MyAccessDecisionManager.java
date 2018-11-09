@@ -2,6 +2,8 @@ package chok.security;
 
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.access.AccessDecisionManager;
@@ -10,6 +12,7 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.web.FilterInvocation;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -44,9 +47,20 @@ public class MyAccessDecisionManager implements AccessDecisionManager
 	            }
 	        }
 	    }
-	    final String msg = "(ROLES DOES NOT MATCH!);"
-	    		+ "(UserRoles=" + authentication.getAuthorities() + ");"
-	    		+ "(NeedRoles=" + configAttributes.toString() + ")";
+		// 获取用户请求相对地址URI
+		HttpServletRequest req = ((FilterInvocation) object).getHttpRequest();
+		String reqURI = req.getRequestURI().trim();
+		if (req.getContextPath().length() > 0)
+		{
+			reqURI = reqURI.replaceFirst(req.getContextPath(), "");
+		}
+	    final String msg = ""
+	    		+ "<div>"
+	    		+ "ROLES DOES NOT MATCH !<br/>"
+	    		+ "NeedRoles=" + configAttributes.toString() + ";<br/>"
+	    		+ "UserRoles=" + authentication.getAuthorities() + ";<br/>"
+				+ "URI=" + reqURI
+				+ "<div/>";
 	    throw new AccessDeniedException(msg);
 	}
 	
