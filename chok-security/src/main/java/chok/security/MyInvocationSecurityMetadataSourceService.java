@@ -21,6 +21,9 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 {
 	private final Log log = LogFactory.getLog(getClass());
 
+	// 将来用配置文件代替
+	private final static String[] IGNORE_URIS = {"/","/index*","/error","/staticexternal/**","/staticinternal/**"};
+	// 资源角色关系
 	private HashMap<String, Collection<ConfigAttribute>> resRolesMap = null;
 
 	/**
@@ -29,25 +32,14 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 	private void obtainResRolesMap()
 	{
 		resRolesMap = new HashMap<>();
-
 		Collection<ConfigAttribute> roles = new ArrayList<ConfigAttribute>();
 		roles.add(new SecurityConfig("ROLE_ADMIN"));
 		roles.add(new SecurityConfig("ADMIN"));
 		roles.add(new SecurityConfig("USER"));
-
-		resRolesMap.put("/", roles);
-		resRolesMap.put("/index*", roles);
-		resRolesMap.put("/error", roles);
 		resRolesMap.put("/admin/home/**", roles);
 		resRolesMap.put("/admin/category/query", roles);
 		resRolesMap.put("/admin/category/query2", roles);
 		resRolesMap.put("/admin/model/query", roles);
-		
-//		Collection<ConfigAttribute> roles2 = new ArrayList<ConfigAttribute>();
-//		roles2.add(new SecurityConfig("KILLER"));
-//		resRolesMap.put("/admin/category/query2", roles2);
-		resRolesMap.put("/staticexternal/**", roles);
-		resRolesMap.put("/staticinternal/**", roles);
 		log.info(resRolesMap.toString());
 	}
 
@@ -75,26 +67,39 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 		{
 			reqURI = reqURI.replaceFirst(req.getContextPath(), "");
 		}
-		log.info("reqURI = " + reqURI);
+		if (log.isDebugEnabled())
+			log.debug("REQURI = " + reqURI);
 		// 获取权限列表
 		if (resRolesMap == null)
 			obtainResRolesMap();
-		// 判断逻辑
-		for (Entry<String, Collection<ConfigAttribute>> e : resRolesMap.entrySet())
+		// 判断逻辑（匹配忽略则放行，否则校验角色授权）
+		// 匹配忽略则放行
+		if (isIgnoreUri(req))
 		{
-			resURI = e.getKey();
-			resURIMatcher = new AntPathRequestMatcher(resURI);
-			resRoles = e.getValue();
-			if (resURIMatcher.matches(req))
-			{
-				log.info("URI matching [" + reqURI + "]");
-				return resRoles;
-			}
+			if (log.isDebugEnabled())
+				log.debug("IGNORE = " + reqURI);
+			return null;
 		}
-		// 黑名单(会导致apache.coyote.http11.Http11Processor : Error processing request异常)
-		 return SecurityConfig.createList("BLACKLIST");
-		// 白名单
-//		return null;
+		// 否则校验角色授权
+		else
+		{
+			log.info("REQURI = " + reqURI);
+			for (Entry<String, Collection<ConfigAttribute>> e : resRolesMap.entrySet())
+			{
+				resURI = e.getKey();
+				resURIMatcher = new AntPathRequestMatcher(resURI);
+				resRoles = e.getValue();
+				if (resURIMatcher.matches(req))
+				{
+					log.info("URI matching [" + reqURI + "]");
+					return resRoles;
+				}
+			}
+			// 黑名单(会导致apache.coyote.http11.Http11Processor : Error processing request异常)
+			return SecurityConfig.createList("BLACKLIST");
+			// 白名单
+			//		return null;
+		}
 	}
 
 	@Override
@@ -103,4 +108,22 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 		return true;
 	}
 
+	/**
+	 * 判断忽略URI
+	 * @param req
+	 * @return boolean
+	 */
+	private boolean isIgnoreUri(HttpServletRequest req)
+	{
+		AntPathRequestMatcher uriMatcher;
+		for(String ignoreUri: IGNORE_URIS)
+		{
+			uriMatcher = new AntPathRequestMatcher(ignoreUri);
+			if (uriMatcher.matches(req))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }
