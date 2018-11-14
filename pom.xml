@@ -88,6 +88,9 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- spring-cloud -->
+			<dependency><groupId>org.springframework.cloud</groupId><artifactId>spring-cloud-dependencies</artifactId><version>Finchley.M9</version><type>pom</type><scope>import</scope></dependency>
+			<dependency><groupId>commons-configuration</groupId><artifactId>commons-configuration</artifactId><version>1.9</version></dependency>
 			<!-- spring-boot WEB支持 -->
 			<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId><version>${spring.boot.version}</version></dependency>
 			<!-- spring-boot-security oauth2 -->
@@ -126,6 +129,17 @@
 			<dependency><groupId>com.chok</groupId><artifactId>chok-sso-client</artifactId><version>${project.version}</version></dependency>
 		</dependencies>
 	</dependencyManagement>
+	
+	<repositories>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/libs-milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 	
 	<build>
 		<!-- 指定打包时还需包含的资源文件，若不配置会遗漏 -->
