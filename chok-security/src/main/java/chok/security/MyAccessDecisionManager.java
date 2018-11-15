@@ -56,7 +56,7 @@ public class MyAccessDecisionManager implements AccessDecisionManager
 		}
 	    final String msg = ""
 	    		+ "<div>"
-	    		+ "ROLES DOES NOT MATCH !<br/>"
+	    		+ "Access Denied !<br/>"
 	    		+ "NeedRoles=" + configAttributes.toString() + ";<br/>"
 	    		+ "UserRoles=" + authentication.getAuthorities() + ";<br/>"
 				+ "URI=" + reqURI
