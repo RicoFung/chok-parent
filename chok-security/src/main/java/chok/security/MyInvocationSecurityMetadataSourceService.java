@@ -34,7 +34,57 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 {
 	private final Log log = LogFactory.getLog(getClass());
 
-	// 读取ignore-uris
+	// chok.security.auth.service-id
+	private static String AUTH_SERVICE_ID = "eureka-client";
+	static
+	{
+		String customAuthServiceId = PropertiesUtil.getValue("config/", "chok.security.auth.service-id");
+		if (null != customAuthServiceId)
+		{
+			AUTH_SERVICE_ID = customAuthServiceId.trim();
+		}
+	}
+	// chok.security.auth.protocol
+	private static String AUTH_PROTOCOL = "http";
+	static
+	{
+		String customAuthProtocol = PropertiesUtil.getValue("config/", "chok.security.auth.protocol");
+		if (null != customAuthProtocol)
+		{
+			AUTH_PROTOCOL = customAuthProtocol.trim();
+		}
+	}
+	// chok.security.auth.uri
+	private static String AUTH_URI = "/authority/queryWithRoleByAppId";
+	static
+	{
+		String customAuthUri = PropertiesUtil.getValue("config/", "chok.security.auth.uri");
+		if (null != customAuthUri)
+		{
+			AUTH_URI = customAuthUri.trim();
+		}
+	}
+	// chok.security.auth.uri-key
+	private static String AUTH_URI_KEY = "appId";
+	static
+	{
+		String customAuthUriKey = PropertiesUtil.getValue("config/", "chok.security.auth.uri-key");
+		if (null != customAuthUriKey)
+		{
+			AUTH_URI_KEY = customAuthUriKey.trim();
+		}
+	}
+	// chok.security.auth.uri-value
+	private static String AUTH_URI_VALUE = "";
+	static
+	{
+		String customAuthUriValue = PropertiesUtil.getValue("config/", "chok.security.auth.uri-value");
+		if (null != customAuthUriValue)
+		{
+			AUTH_URI_VALUE = customAuthUriValue.trim();
+		}
+	}
+	// chok.security.ignore-uris
 	private static String[] IGNORE_URIS = {"/","/index*","/error","/staticexternal/**","/staticinternal/**"};
 	static 
 	{
@@ -58,8 +108,8 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 	private void obtainResRolesMap()
 	{
 		// 通过微服务获取App授权
-		ServiceInstance serviceInstance = loadBalancerClient.choose("eureka-client");
-		String url = "http://" + serviceInstance.getHost() + ":" + serviceInstance.getPort() + "/authority/queryWithRoleByAppid?appid=3";
+		ServiceInstance serviceInstance = loadBalancerClient.choose(AUTH_SERVICE_ID);
+		String url = AUTH_PROTOCOL + "://" + serviceInstance.getHost() + ":" + serviceInstance.getPort() + AUTH_URI + "?" + AUTH_URI_KEY + "=" + AUTH_URI_VALUE;
 		log.info("Rest url => " + url);
 		JSONObject jo = restTemplate.getForObject(url, JSONObject.class);
 		log.info("Rest result <= " + jo);
@@ -128,14 +178,14 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 		if (authorityRoleMap == null)
 			obtainResRolesMap();
 		// 判断逻辑（匹配忽略则放行，否则校验角色授权）
-		// 匹配忽略则放行
+		// 放行
 		if (isIgnoreUri(req))
 		{
 			if (log.isDebugEnabled())
 				log.debug("IGNORE = " + reqURI);
 			return null;
 		}
-		// 否则校验角色授权
+		// 授权
 		else
 		{
 			log.info("REQURI = " + reqURI);
@@ -164,14 +214,14 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 	}
 
 	/**
-	 * 判断忽略URI
+	 * 校验忽略URI
 	 * @param req
 	 * @return boolean
 	 */
 	private boolean isIgnoreUri(HttpServletRequest req)
 	{
 		AntPathRequestMatcher uriMatcher;
-		for(int i=0; i<IGNORE_URIS.length; i++)//String ignoreUri: IGNORE_URIS)
+		for(int i=0; i<IGNORE_URIS.length; i++)
 		{
 			String ignoreUri = IGNORE_URIS[i];
 			log.info("IGNORE_URIS[" + i + "] = " + ignoreUri);
