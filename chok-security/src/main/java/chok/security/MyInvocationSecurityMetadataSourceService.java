@@ -85,7 +85,7 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 		}
 	}
 	// chok.security.ignore-uris
-	private static String[] IGNORE_URIS = {"/","/index*","/error","/staticexternal/**","/staticinternal/**"};
+	private static String[] IGNORE_URIS = {"/","/index*","/**/home/menu","/error","/staticexternal/**","/staticinternal/**"};
 	static 
 	{
 		String customIgnoreUris = PropertiesUtil.getValue("config/", "chok.security.ignore-uris");
