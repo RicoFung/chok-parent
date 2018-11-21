@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 
-
+@Deprecated
 public abstract class BaseDao<T,PK> extends SqlSessionDaoSupport
 {
 	/**

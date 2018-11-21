@@ -3,6 +3,7 @@ package chok.devwork;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public abstract class BaseService<T,PK> 
 {
 	public abstract BaseDao<T, PK> getEntityDao();
