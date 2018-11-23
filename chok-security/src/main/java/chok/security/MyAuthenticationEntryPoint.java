@@ -6,8 +6,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint 
 {
-	private final Log log = LogFactory.getLog(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	@Autowired
 	AjaxRequestMatcher ajaxRequestMatcher;
@@ -28,11 +28,13 @@ public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint
 		{
 			if (ajaxRequestMatcher.matches(request))
 			{
-				log.info("(ajax: " + request.getRequestURI().trim() + ")(401)(" + authException.getMessage() + ")");
+				if (log.isInfoEnabled())
+					log.info("(ajax: ({})(401)({})", request.getRequestURI().trim(), authException.getMessage());
 			}
 			else
 			{
-				log.info("(!ajax: " + request.getRequestURI().trim() + ")(401)(" + authException.getMessage() + ")");
+				if (log.isInfoEnabled())
+					log.info("(!ajax: ({})(401)({})", request.getRequestURI().trim(), authException.getMessage());
 			}
 			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
 		}

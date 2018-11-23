@@ -4,8 +4,8 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyAccessDecisionManager implements AccessDecisionManager
 {
-	private final Log log = LogFactory.getLog(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	
   // decide 方法是判定是否拥有权限的决策方法，
   // authentication 是释CustomUserService中循环添加到 GrantedAuthority 对象中的权限信息集合.
@@ -27,10 +27,13 @@ public class MyAccessDecisionManager implements AccessDecisionManager
 	@Override
 	public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes) throws AccessDeniedException, InsufficientAuthenticationException 
 	{
-		log.info(authentication.toString()+"");
-		log.info("UserPrincipal == " + authentication.getPrincipal());
-		log.info("UserRoles == " + authentication.getAuthorities());
-		log.info("ResourceRoles == " + configAttributes.toString());
+    	if (log.isInfoEnabled())
+    	{
+			log.info(authentication.toString()+"");
+			log.info("UserPrincipal == " + authentication.getPrincipal());
+			log.info("UserRoles == " + authentication.getAuthorities());
+			log.info("ResourceRoles == " + configAttributes.toString());
+    	}
 	    if(null == configAttributes || configAttributes.size() <=0) 
 	    {
 		    log.error("ResourceRoles is null");
@@ -42,7 +45,8 @@ public class MyAccessDecisionManager implements AccessDecisionManager
 	        {
 	            if(ca.getAttribute().trim().equals(ga.getAuthority())) 
 	            {
-	            	log.info("Roles matching [" + ga.getAuthority() + "]");
+	            	if (log.isDebugEnabled())
+	            		log.debug("Roles matching [{}]", ga.getAuthority());
 	                return;
 	            }
 	        }

@@ -1,6 +1,7 @@
 package chok.security;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -8,8 +9,8 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
@@ -32,7 +33,7 @@ import chok.util.PropertiesUtil;
 @Component
 public class MyInvocationSecurityMetadataSourceService implements FilterInvocationSecurityMetadataSource
 {
-	private final Log log = LogFactory.getLog(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	// chok.security.auth.service-id
 	private static String AUTH_SERVICE_ID = "eureka-client";
@@ -85,18 +86,19 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 		}
 	}
 	// chok.security.ignore-uris
-	private static String[] IGNORE_URIS = {"/","/index*","/**/home/menu","/error","/staticexternal/**","/staticinternal/**"};
-	static 
+	private static String[] IGNORE_URIS = { "/", "/index*", "/**/home/menu", "/error", "/staticexternal/**",
+			"/staticinternal/**" };
+	static
 	{
 		String customIgnoreUris = PropertiesUtil.getValue("config/", "chok.security.ignore-uris");
 		if (null != customIgnoreUris)
 		{
-			IGNORE_URIS	= customIgnoreUris.trim().split(",");
+			IGNORE_URIS = customIgnoreUris.trim().split(",");
 		}
 	}
 	// 资源角色关系
 	private HashMap<String, Collection<ConfigAttribute>> authorityRoleMap = null;
-	
+
 	@Autowired
 	LoadBalancerClient	loadBalancerClient;
 	@Autowired
@@ -109,44 +111,47 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 	{
 		// 通过微服务获取App授权
 		ServiceInstance serviceInstance = loadBalancerClient.choose(AUTH_SERVICE_ID);
-		String url = AUTH_PROTOCOL + "://" + serviceInstance.getHost() + ":" + serviceInstance.getPort() + AUTH_URI + "?" + AUTH_URI_KEY + "=" + AUTH_URI_VALUE;
-		log.info("Rest url => " + url);
+		String url = AUTH_PROTOCOL + "://" + serviceInstance.getHost() + ":" + serviceInstance.getPort() + AUTH_URI
+				+ "?" + AUTH_URI_KEY + "=" + AUTH_URI_VALUE;
+		log.info("Rest url => {}", url);
 		JSONObject jo = restTemplate.getForObject(url, JSONObject.class);
-		log.info("Rest result <= " + jo);
+		log.info("Rest result <= {}", jo);
 		//
 		if (jo.getBoolean("success"))
 		{
-			// JSONArray 转 List<TbAuthorityDto> 
+			// JSONArray 转 List<TbAuthorityDto>
 			JSONArray authJsonArray = jo.getJSONObject("data").getJSONArray("authorities");
 			String js = JSONArray.toJSONString(authJsonArray, SerializerFeature.EMPTY);
 			List<TbAuthorityDto> authorities = JSON.parseArray(js, TbAuthorityDto.class);
 			// 构建authorityRoleMap
 			authorityRoleMap = new HashMap<>();
-			authorities.forEach(authority->{
+			authorities.forEach(authority ->
+			{
 				Collection<ConfigAttribute> roles = new ArrayList<ConfigAttribute>();
-				authority.getTcRoles().forEach(role->{
+				authority.getTcRoles().forEach(role ->
+				{
 					roles.add(new SecurityConfig(role.getTcCode()));
 				});
 				authorityRoleMap.put(authority.getTcUrl(), roles);
 			});
 		}
-		log.info(authorityRoleMap!=null?authorityRoleMap.toString():"");
+		log.info(authorityRoleMap != null ? authorityRoleMap.toString() : "");
 	}
 
-	// Demo	
-//	private void obtainResRolesMap()
-//	{
-//		authorityRoleMap = new HashMap<>();
-//		Collection<ConfigAttribute> roles = new ArrayList<ConfigAttribute>();
-//		roles.add(new SecurityConfig("ROLE_ADMIN"));
-//		roles.add(new SecurityConfig("ADMIN"));
-//		roles.add(new SecurityConfig("USER"));
-//		authorityRoleMap.put("/admin/home/**", roles);
-//		authorityRoleMap.put("/admin/category/query", roles);
-//		authorityRoleMap.put("/admin/category/query2", roles);
-//		authorityRoleMap.put("/admin/model/query", roles);
-//		log.info(authorityRoleMap.toString());
-//	}
+	// Demo
+	// private void obtainResRolesMap()
+	// {
+	// authorityRoleMap = new HashMap<>();
+	// Collection<ConfigAttribute> roles = new ArrayList<ConfigAttribute>();
+	// roles.add(new SecurityConfig("ROLE_ADMIN"));
+	// roles.add(new SecurityConfig("ADMIN"));
+	// roles.add(new SecurityConfig("USER"));
+	// authorityRoleMap.put("/admin/home/**", roles);
+	// authorityRoleMap.put("/admin/category/query", roles);
+	// authorityRoleMap.put("/admin/category/query2", roles);
+	// authorityRoleMap.put("/admin/model/query", roles);
+	// log.info(authorityRoleMap.toString());
+	// }
 
 	@Override
 	public Collection<ConfigAttribute> getAllConfigAttributes()
@@ -173,7 +178,7 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 			reqURI = reqURI.replaceFirst(req.getContextPath(), "");
 		}
 		if (log.isDebugEnabled())
-			log.debug("REQURI = " + reqURI);
+			log.debug("REQURI = {}", reqURI);
 		// 获取权限列表
 		if (authorityRoleMap == null)
 			obtainResRolesMap();
@@ -182,13 +187,14 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 		if (isIgnoreUri(req))
 		{
 			if (log.isDebugEnabled())
-				log.debug("IGNORE = " + reqURI);
+				log.debug("IGNORE = {}", reqURI);
 			return null;
 		}
 		// 授权
 		else
 		{
-			log.info("REQURI = " + reqURI);
+			if (log.isDebugEnabled())
+				log.debug("REQURI = {}", reqURI);
 			for (Entry<String, Collection<ConfigAttribute>> e : authorityRoleMap.entrySet())
 			{
 				resURI = e.getKey();
@@ -196,14 +202,15 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 				authorityRole = e.getValue();
 				if (resURIMatcher.matches(req))
 				{
-					log.info("URI matching [" + reqURI + "]");
+					if (log.isDebugEnabled())
+						log.debug("URI matching [{}]", reqURI);
 					return authorityRole;
 				}
 			}
 			// 黑名单(会导致apache.coyote.http11.Http11Processor : Error processing request异常)
 			return SecurityConfig.createList("BLACKLIST");
 			// 白名单
-			//		return null;
+			// return null;
 		}
 	}
 
@@ -215,16 +222,18 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 
 	/**
 	 * 校验忽略URI
+	 * 
 	 * @param req
 	 * @return boolean
 	 */
 	private boolean isIgnoreUri(HttpServletRequest req)
 	{
 		AntPathRequestMatcher uriMatcher;
-		for(int i=0; i<IGNORE_URIS.length; i++)
+		if (log.isDebugEnabled())
+			log.debug("IGNORE_URIS = {}", Arrays.toString(IGNORE_URIS));
+		for (int i = 0; i < IGNORE_URIS.length; i++)
 		{
 			String ignoreUri = IGNORE_URIS[i];
-			log.info("IGNORE_URIS[" + i + "] = " + ignoreUri);
 			uriMatcher = new AntPathRequestMatcher(ignoreUri);
 			if (uriMatcher.matches(req))
 			{
