@@ -1,5 +1,6 @@
 package chok.util;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -27,17 +28,21 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import chok.common.BaseModel;
 
 public class POIUtil
 {
-	private static Logger		logger			= Logger.getLogger(POIUtil.class);
-	private final static String	xls				= "xls";
-	private final static String	xlsx			= "xlsx";
-	private static int			titleFontSize	= 20;
-	private static int			headerFontSize	= 14;
+	private final static Logger	log					= LoggerFactory.getLogger(POIUtil.class);
+	private final static String	XLS					= "xls";
+	private final static String	XLSX				= "xlsx";
+	private final static String	MSG_FORMAT_ERR		= "excel格式错误！";
+	private final static String	MSG_FILE_NOT_FOUND	= "文件不存在！";
+	private static int			titleFontSize		= 20;
+	private static int			headerFontSize		= 14;
 
 	/**
 	 * 读入EXCEL
@@ -51,6 +56,28 @@ public class POIUtil
 		checkFile(file);
 		// 获得Workbook工作薄对象
 		Workbook workbook = getWorkBook(file);
+		// 读取到List<String[]>
+		return workbookToList(workbook);
+	}
+
+	public static List<String[]> readExcel(String filePath) throws Exception
+	{
+		// 检查文件
+		checkFile(filePath);
+		// 获得Workbook工作薄对象
+		Workbook workbook = getWorkBook(filePath);
+		// 读取到List<String[]>
+		return workbookToList(workbook);
+	}
+
+	/**
+	 * 
+	 * @param workbook
+	 * @return List<String[]>
+	 * @throws IOException
+	 */
+	private static List<String[]> workbookToList(Workbook workbook) throws IOException
+	{
 		// 创建返回对象，把每行中的值作为一个数组，所有行作为一个集合返回
 		List<String[]> list = new ArrayList<String[]>();
 		if (workbook != null)
@@ -130,7 +157,7 @@ public class POIUtil
 			if (dataColumn != null && dataColumn.length() > 0)
 				dataColumnArray = dataColumn.split(",");
 			// 写入标题
-			if (title != null && !title.equals("") && title.length()>0)
+			if (title != null && !title.equals("") && title.length() > 0)
 			{
 				wsheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headerNameArray.length - 1));
 				XSSFCell c = wsheet.createRow(writingRow).createCell(0);
@@ -235,20 +262,48 @@ public class POIUtil
 		// 判断文件是否存在
 		if (null == file)
 		{
-			logger.error("文件不存在！");
-			throw new FileNotFoundException("文件不存在！");
+			log.error(MSG_FILE_NOT_FOUND);
+			throw new FileNotFoundException(MSG_FILE_NOT_FOUND);
 		}
 		// 获得文件名
 		String fileName = file.getOriginalFilename();
 		// 判断文件是否是excel文件
-		if (!fileName.endsWith(xls) && !fileName.endsWith(xlsx))
+		if (!fileName.endsWith(XLS) && !fileName.endsWith(XLSX))
 		{
-			logger.error(fileName + "不是excel文件");
-			throw new IOException(fileName + "不是excel文件");
+			log.error(MSG_FORMAT_ERR + "(" + fileName + ")");
+			throw new IOException(MSG_FORMAT_ERR + "(" + fileName + ")");
+		}
+	}
+	
+	public static void checkFile(String filePath) throws IOException 
+	{
+		// 判断文件是否存在
+		FileInputStream is = null;
+		try
+		{
+			is = new FileInputStream(filePath);
+		}
+		catch (Exception e)
+		{
+			log.error(MSG_FILE_NOT_FOUND);
+			throw new FileNotFoundException(MSG_FILE_NOT_FOUND);
+		}
+		finally 
+		{
+			if (null != is)
+			{
+				is.close();
+			}
+		}
+		// 判断文件是否是excel文件
+		if (!filePath.toLowerCase().endsWith(XLS) && !filePath.toLowerCase().endsWith(XLSX))
+		{
+			log.error(MSG_FORMAT_ERR + "(" + filePath + ")");
+			throw new IOException(MSG_FORMAT_ERR + "(" + filePath + ")");
 		}
 	}
 
-	public static Workbook getWorkBook(MultipartFile file)
+	public static Workbook getWorkBook(MultipartFile file) throws IOException
 	{
 		// 获得文件名
 		String fileName = file.getOriginalFilename();
@@ -259,12 +314,12 @@ public class POIUtil
 			// 获取excel文件的io流
 			InputStream is = file.getInputStream();
 			// 根据文件后缀名不同(xls和xlsx)获得不同的Workbook实现类对象
-			if (fileName.endsWith(xls))
+			if (fileName.endsWith(XLS))
 			{
 				// 2003
 				workbook = new HSSFWorkbook(is);
 			}
-			else if (fileName.endsWith(xlsx))
+			else if (fileName.endsWith(XLSX))
 			{
 				// 2007
 				workbook = new XSSFWorkbook(is);
@@ -272,7 +327,46 @@ public class POIUtil
 		}
 		catch (IOException e)
 		{
-			logger.info(e.getMessage());
+			log.error(e.getMessage());
+			throw e;
+		}
+		finally
+		{
+			IOUtils.closeQuietly(workbook);
+		}
+		return workbook;
+	}
+
+	public static Workbook getWorkBook(String filePath) throws IOException
+	{
+		// 获得文件名
+		FileInputStream is = null;
+		// 创建Workbook工作薄对象，表示整个excel
+		Workbook workbook = null;
+		try
+		{
+			// 获取excel文件的io流
+			is = new FileInputStream(filePath);
+			// 根据文件后缀名不同(xls和xlsx)获得不同的Workbook实现类对象
+			if (filePath.toLowerCase().endsWith(XLS))
+			{
+				// 2003
+				workbook = new HSSFWorkbook(is);
+			}
+			else if (filePath.toLowerCase().endsWith(XLSX))
+			{
+				// 2007
+				workbook = new XSSFWorkbook(is);
+			}
+		}
+		catch (IOException e)
+		{
+			log.error(e.getMessage());
+			throw e;
+		}
+		finally
+		{
+			IOUtils.closeQuietly(workbook);
 		}
 		return workbook;
 	}
