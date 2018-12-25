@@ -9,6 +9,7 @@
 	<packaging>pom</packaging>
 	<!--以下是給工具看的,主要是本Project的資訊-->
 	<name>chok-parent</name>
+	
 	<!-- 指定JDK -->
 	<profiles>
 		<profile>     
@@ -53,22 +54,26 @@
 	</properties>
 	
 	<dependencies>
-		<!-- spring-boot thymeleaf -->
+		<!-- spring-boot-starter-thymeleaf -->
 		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-thymeleaf</artifactId></dependency>
-		<!-- spring-boot 热部署 -->
+		<!-- spring-boot-devtools 热部署 -->
 		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-devtools</artifactId></dependency>
-		<!-- spring-boot 打包时，把内嵌的tomcat排除掉 -->
+		<!-- spring-boot-starter-tomcat 打包时，把内嵌的tomcat排除掉 -->
 		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-tomcat</artifactId><scope>provided</scope></dependency>
-		<!-- spring-boot 用于编译jsp -->
-		<dependency><groupId>org.apache.tomcat.embed</groupId><artifactId>tomcat-embed-jasper</artifactId><scope>provided</scope></dependency>
-		<!-- spring-boot jsp页面使用jstl标签-->
-		<dependency><groupId>javax.servlet</groupId><artifactId>jstl</artifactId></dependency>
-		<!-- spring-boot mybatis -->
-		<dependency><groupId>org.mybatis.spring.boot</groupId><artifactId>mybatis-spring-boot-starter</artifactId><version>${mybatis.spring.boot.version}</version></dependency>
-        <!-- Spring Boot Redis -->
+        <!-- spring-boot-starter-data-redis -->
 		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-data-redis</artifactId></dependency>
-		<!-- spring-boot test -->
+		<!-- spring-boot-starter-test -->
 		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId></dependency>
+		<!-- mybatis-spring-boot-starter -->
+		<dependency><groupId>org.mybatis.spring.boot</groupId><artifactId>mybatis-spring-boot-starter</artifactId><version>${mybatis.spring.boot.version}</version></dependency>
+		<!-- mybatis-redis
+        <dependency><groupId>redis.clients</groupId><artifactId>jedis</artifactId></dependency>
+		<dependency><groupId>org.mybatis.caches</groupId><artifactId>mybatis-redis</artifactId><version>1.0.0-beta2</version></dependency>
+		 -->
+		<!-- tomcat-embed-jasper 用于编译jsp -->
+		<dependency><groupId>org.apache.tomcat.embed</groupId><artifactId>tomcat-embed-jasper</artifactId><scope>provided</scope></dependency>
+		<!-- jstl jsp页面使用jstl标签-->
+		<dependency><groupId>javax.servlet</groupId><artifactId>jstl</artifactId></dependency>
 		<!-- 其他工具包 -->
 		<dependency><groupId>com.alibaba</groupId><artifactId>fastjson</artifactId><version>1.2.46</version></dependency>
 		<dependency><groupId>commons-logging</groupId><artifactId>commons-logging</artifactId><version>1.2</version></dependency>

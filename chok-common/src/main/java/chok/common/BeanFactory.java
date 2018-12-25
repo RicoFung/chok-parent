@@ -41,4 +41,13 @@ public class BeanFactory implements ApplicationContextAware
 	{
 		return context.getBean(name);
 	}
+	
+	/**
+	 * 获取当前环境
+	 * @return String
+	 */
+    public static String getActiveProfile() 
+    {
+        return context.getEnvironment().getActiveProfiles()[0];
+    }
 }
