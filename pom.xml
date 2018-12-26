@@ -35,6 +35,7 @@
 	<modules>
 		<module>chok-common</module>
 		<module>chok-util</module>
+		<module>chok-redis</module>
 		<module>chok-devwork</module>
 		<module>chok-cas-client</module>
 		<module>chok-sso-client</module>
@@ -56,7 +57,7 @@
 	<dependencies>
 		<!-- spring-boot-starter-thymeleaf -->
 		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-thymeleaf</artifactId></dependency>
-		<!-- spring-boot-devtools 热部署 -->
+		<!-- spring-boot-devtools 用于开发环境热部署 -->
 		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-devtools</artifactId></dependency>
 		<!-- spring-boot-starter-tomcat 打包时，把内嵌的tomcat排除掉 -->
 		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-tomcat</artifactId><scope>provided</scope></dependency>
@@ -130,6 +131,7 @@
 			<!-- chok -->
 			<dependency><groupId>com.chok</groupId><artifactId>chok-common</artifactId><version>${project.version}</version></dependency>
 			<dependency><groupId>com.chok</groupId><artifactId>chok-util</artifactId><version>${project.version}</version></dependency>
+			<dependency><groupId>com.chok</groupId><artifactId>chok-redis</artifactId><version>${project.version}</version></dependency>
 			<dependency><groupId>com.chok</groupId><artifactId>chok-devwork</artifactId><version>${project.version}</version></dependency>
 			<dependency><groupId>com.chok</groupId><artifactId>chok-security</artifactId><version>${project.version}</version></dependency>
 			<dependency><groupId>com.chok</groupId><artifactId>chok-cas-client</artifactId><version>${project.version}</version></dependency>

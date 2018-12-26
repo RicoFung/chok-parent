@@ -1,4 +1,4 @@
-package chok.util.mybatis;
+package chok.redis.mybatis;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
