@@ -1,19 +1,21 @@
 package chok.security;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.core.env.Environment;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
@@ -28,130 +30,107 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import chok.security.dto.TbAuthorityDto;
-import chok.util.PropertiesUtil;
 
 @Component
 public class MyInvocationSecurityMetadataSourceService implements FilterInvocationSecurityMetadataSource
 {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	// chok.security.auth.service-id
-	private static String AUTH_SERVICE_ID = "eureka-client";
-	static
-	{
-		String customAuthServiceId = PropertiesUtil.getValue("config/", "chok.security.auth.service-id");
-		if (null != customAuthServiceId)
-		{
-			AUTH_SERVICE_ID = customAuthServiceId.trim();
-		}
-	}
-	// chok.security.auth.protocol
-	private static String AUTH_PROTOCOL = "http";
-	static
-	{
-		String customAuthProtocol = PropertiesUtil.getValue("config/", "chok.security.auth.protocol");
-		if (null != customAuthProtocol)
-		{
-			AUTH_PROTOCOL = customAuthProtocol.trim();
-		}
-	}
-	// chok.security.auth.uri
-	private static String AUTH_URI = "/authority/queryWithRoleByAppId";
-	static
-	{
-		String customAuthUri = PropertiesUtil.getValue("config/", "chok.security.auth.uri");
-		if (null != customAuthUri)
-		{
-			AUTH_URI = customAuthUri.trim();
-		}
-	}
-	// chok.security.auth.uri-key
-	private static String AUTH_URI_KEY = "appId";
-	static
-	{
-		String customAuthUriKey = PropertiesUtil.getValue("config/", "chok.security.auth.uri-key");
-		if (null != customAuthUriKey)
-		{
-			AUTH_URI_KEY = customAuthUriKey.trim();
-		}
-	}
-	// chok.security.auth.uri-value
-	private static String AUTH_URI_VALUE = "";
-	static
-	{
-		String customAuthUriValue = PropertiesUtil.getValue("config/", "chok.security.auth.uri-value");
-		if (null != customAuthUriValue)
-		{
-			AUTH_URI_VALUE = customAuthUriValue.trim();
-		}
-	}
-	// chok.security.ignore-uris
-	private static String[] IGNORE_URIS = { "/", "/index*", "/**/home/menu", "/error", "/staticexternal/**",
-			"/staticinternal/**" };
-	static
-	{
-		String customIgnoreUris = PropertiesUtil.getValue("config/", "chok.security.ignore-uris");
-		if (null != customIgnoreUris)
-		{
-			IGNORE_URIS = customIgnoreUris.trim().split(",");
-		}
-	}
+	private static String	AUTH_SERVICE_ID	= "eureka-client";
+	private static String	AUTH_PROTOCOL	= "http";
+	private static String	AUTH_URI		= "/authority/queryWithRoleByAppId";
+	private static String	AUTH_URI_KEY	= "appId";
+	private static String	AUTH_URI_VALUE	= "";
+
 	// 资源角色关系
-	private HashMap<String, Collection<ConfigAttribute>> authorityRoleMap = null;
+	private HashMap<String, Collection<ConfigAttribute>> AUTHORITY_ROLE_MAP = null;
 
 	@Autowired
-	LoadBalancerClient	loadBalancerClient;
+	private Environment	env;
 	@Autowired
-	RestTemplate		restTemplate;
+	private LoadBalancerClient	loadBalancerClient;
+	@Autowired
+	private RestTemplate		restTemplate;
+	@Autowired
+	private HttpSession			httpSession;
 
+	@PostConstruct
+	public void init()
+	{
+		String customAuthServiceId = env.getProperty("chok.security.auth.service-id");
+		if (null != customAuthServiceId)
+			AUTH_SERVICE_ID = customAuthServiceId.trim();
+		String customAuthProtocol = env.getProperty("chok.security.auth.protocol");
+		if (null != customAuthProtocol)
+			AUTH_PROTOCOL = customAuthProtocol.trim();
+		String customAuthUri = env.getProperty("chok.security.auth.uri");
+		if (null != customAuthUri)
+			AUTH_URI = customAuthUri.trim();
+		String customAuthUriKey = env.getProperty("chok.security.auth.uri-key");
+		if (null != customAuthUriKey)
+			AUTH_URI_KEY = customAuthUriKey.trim();
+		String customAuthUriValue = env.getProperty("chok.security.auth.uri-value");
+		if (null != customAuthUriValue)
+			AUTH_URI_VALUE = customAuthUriValue.trim();
+	}
+	
 	/**
 	 * 获得权限表中所有权限
 	 */
-	private void obtainResRolesMap()
+	@SuppressWarnings("unchecked")
+	private void obtainAuthorityRolesMap()
 	{
-		// 通过微服务获取App授权
-		ServiceInstance serviceInstance = loadBalancerClient.choose(AUTH_SERVICE_ID);
-		String url = AUTH_PROTOCOL + "://" + serviceInstance.getHost() + ":" + serviceInstance.getPort() + AUTH_URI
-				+ "?" + AUTH_URI_KEY + "=" + AUTH_URI_VALUE;
-		log.info("Rest url => {}", url);
-		JSONObject jo = restTemplate.getForObject(url, JSONObject.class);
-		log.info("Rest result <= {}", jo);
-		//
-		if (jo.getBoolean("success"))
+		if (httpSession.getAttribute("AUTHORITY_ROLE_MAP") == null)
 		{
-			// JSONArray 转 List<TbAuthorityDto>
-			JSONArray authJsonArray = jo.getJSONObject("data").getJSONArray("authorities");
-			String js = JSONArray.toJSONString(authJsonArray, SerializerFeature.EMPTY);
-			List<TbAuthorityDto> authorities = JSON.parseArray(js, TbAuthorityDto.class);
-			// 构建authorityRoleMap
-			authorityRoleMap = new HashMap<>();
-			authorities.forEach(authority ->
+			// 通过微服务获取App授权
+			ServiceInstance serviceInstance = loadBalancerClient.choose(AUTH_SERVICE_ID);
+			String url = AUTH_PROTOCOL + "://" + serviceInstance.getHost() + ":" + serviceInstance.getPort() + AUTH_URI
+					+ "?" + AUTH_URI_KEY + "=" + AUTH_URI_VALUE;
+			log.info("Rest url => {}", url);
+			JSONObject jo = restTemplate.getForObject(url, JSONObject.class);
+			log.info("Rest result <= {}", jo);
+			//
+			if (jo.getBoolean("success"))
 			{
-				Collection<ConfigAttribute> roles = new ArrayList<ConfigAttribute>();
-				authority.getTcRoles().forEach(role ->
+				// JSONArray 转 List<TbAuthorityDto>
+				JSONArray authJsonArray = jo.getJSONObject("data").getJSONArray("authorities");
+				String js = JSONArray.toJSONString(authJsonArray, SerializerFeature.EMPTY);
+				List<TbAuthorityDto> authorities = JSON.parseArray(js, TbAuthorityDto.class);
+				// 构建authorityRoleMap
+				AUTHORITY_ROLE_MAP = new HashMap<>();
+				authorities.forEach(authority ->
 				{
-					roles.add(new SecurityConfig(role.getTcCode()));
+					Collection<ConfigAttribute> roles = new ArrayList<ConfigAttribute>();
+					authority.getTcRoles().forEach(role ->
+					{
+						roles.add(new SecurityConfig(role.getTcCode()));
+					});
+					AUTHORITY_ROLE_MAP.put(authority.getTcUrl(), roles);
 				});
-				authorityRoleMap.put(authority.getTcUrl(), roles);
-			});
+			}
+			log.info(AUTHORITY_ROLE_MAP != null ? AUTHORITY_ROLE_MAP.toString() : "");
+			httpSession.setAttribute("AUTHORITY_ROLE_MAP", AUTHORITY_ROLE_MAP);
 		}
-		log.info(authorityRoleMap != null ? authorityRoleMap.toString() : "");
+		else
+		{
+			AUTHORITY_ROLE_MAP = (HashMap<String, Collection<ConfigAttribute>>)httpSession.getAttribute("AUTHORITY_ROLE_MAP");
+		}
 	}
 
 	// Demo
-	// private void obtainResRolesMap()
-	// {
-	// authorityRoleMap = new HashMap<>();
-	// Collection<ConfigAttribute> roles = new ArrayList<ConfigAttribute>();
-	// roles.add(new SecurityConfig("ROLE_ADMIN"));
-	// roles.add(new SecurityConfig("ADMIN"));
-	// roles.add(new SecurityConfig("USER"));
-	// authorityRoleMap.put("/admin/home/**", roles);
-	// authorityRoleMap.put("/admin/category/query", roles);
-	// authorityRoleMap.put("/admin/category/query2", roles);
-	// authorityRoleMap.put("/admin/model/query", roles);
-	// log.info(authorityRoleMap.toString());
-	// }
+//	 private void obtainAuthorityRolesMap()
+//	 {
+//		 AUTHORITY_ROLE_MAP = new HashMap<>();
+//		 Collection<ConfigAttribute> roles = new ArrayList<ConfigAttribute>();
+//		 roles.add(new SecurityConfig("ROLE_ADMIN"));
+//		 roles.add(new SecurityConfig("ADMIN"));
+//		 roles.add(new SecurityConfig("USER"));
+//		 AUTHORITY_ROLE_MAP.put("/admin/home/**", roles);
+//		 AUTHORITY_ROLE_MAP.put("/admin/category/query", roles);
+//		 AUTHORITY_ROLE_MAP.put("/admin/category/query2", roles);
+//		 AUTHORITY_ROLE_MAP.put("/admin/model/query", roles);
+//		 log.info(AUTHORITY_ROLE_MAP.toString());
+//	 }
 
 	@Override
 	public Collection<ConfigAttribute> getAllConfigAttributes()
@@ -180,66 +159,32 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
 		if (log.isDebugEnabled())
 			log.debug("REQURI = {}", reqURI);
 		// 获取权限列表
-		if (authorityRoleMap == null)
-			obtainResRolesMap();
-		// 判断逻辑（匹配忽略则放行，否则校验角色授权）
-		// 放行
-		if (isIgnoreUri(req))
-		{
-			if (log.isDebugEnabled())
-				log.debug("IGNORE = {}", reqURI);
-			return null;
-		}
+//		if (AUTHORITY_ROLE_MAP == null)
+		obtainAuthorityRolesMap();
 		// 授权
-		else
+		if (log.isDebugEnabled())
+			log.debug("REQURI = {}", reqURI);
+		for (Entry<String, Collection<ConfigAttribute>> e : AUTHORITY_ROLE_MAP.entrySet())
 		{
-			if (log.isDebugEnabled())
-				log.debug("REQURI = {}", reqURI);
-			for (Entry<String, Collection<ConfigAttribute>> e : authorityRoleMap.entrySet())
+			resURI = e.getKey();
+			resURIMatcher = new AntPathRequestMatcher(resURI);
+			authorityRole = e.getValue();
+			if (resURIMatcher.matches(req))
 			{
-				resURI = e.getKey();
-				resURIMatcher = new AntPathRequestMatcher(resURI);
-				authorityRole = e.getValue();
-				if (resURIMatcher.matches(req))
-				{
-					if (log.isDebugEnabled())
-						log.debug("URI matching [{}]", reqURI);
-					return authorityRole;
-				}
+				if (log.isDebugEnabled())
+					log.debug("URI matching [{}]", reqURI);
+				return authorityRole;
 			}
-			// 黑名单(会导致apache.coyote.http11.Http11Processor : Error processing request异常)
-			return SecurityConfig.createList("BLACKLIST");
-			// 白名单
-			// return null;
 		}
+		// 黑名单(会导致apache.coyote.http11.Http11Processor : Error processing request异常)
+		return SecurityConfig.createList("BLACKLIST");
+		// 白名单
+		// return null;
 	}
 
 	@Override
 	public boolean supports(Class<?> arg0)
 	{
 		return true;
-	}
-
-	/**
-	 * 校验忽略URI
-	 * 
-	 * @param req
-	 * @return boolean
-	 */
-	private boolean isIgnoreUri(HttpServletRequest req)
-	{
-		AntPathRequestMatcher uriMatcher;
-		if (log.isDebugEnabled())
-			log.debug("IGNORE_URIS = {}", Arrays.toString(IGNORE_URIS));
-		for (int i = 0; i < IGNORE_URIS.length; i++)
-		{
-			String ignoreUri = IGNORE_URIS[i];
-			uriMatcher = new AntPathRequestMatcher(ignoreUri);
-			if (uriMatcher.matches(req))
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 }
