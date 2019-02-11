@@ -10,6 +10,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/*******************************************
+ * 
+ * 只能拦截到Controller层的异常，且Controller自行try catch的话会无效
+ * @author rico.fung
+ *
+ */
 @ControllerAdvice
 public class GlobalDefaultExceptionHandler
 {
