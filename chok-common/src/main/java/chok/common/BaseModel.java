@@ -1,7 +1,7 @@
 package chok.common;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 public abstract class BaseModel implements Serializable
 {
@@ -19,15 +19,15 @@ public abstract class BaseModel implements Serializable
 		this.id = id;
 	}
 
-	HashMap<String, Object> m;
+	ConcurrentSkipListMap<String, Object> m;
 
-	public HashMap<String, Object> getM() 
+	public ConcurrentSkipListMap<String, Object> getM() 
 	{
-		m = m==null?new HashMap<String, Object>():m;
+		m = m==null?new ConcurrentSkipListMap<String, Object>():m;
 		return m;
 	}
 
-	public void setM(HashMap<String, Object> m) 
+	public void setM(ConcurrentSkipListMap<String, Object> m) 
 	{
 		this.m = m;
 	}
