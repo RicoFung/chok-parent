@@ -71,6 +71,8 @@
         <dependency><groupId>redis.clients</groupId><artifactId>jedis</artifactId></dependency>
 		<dependency><groupId>org.mybatis.caches</groupId><artifactId>mybatis-redis</artifactId><version>1.0.0-beta2</version></dependency>
 		 -->
+		<!-- spring-boot jdbc -->
+		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-jdbc</artifactId></dependency>
 		<!-- tomcat-embed-jasper 用于编译jsp -->
 		<dependency><groupId>org.apache.tomcat.embed</groupId><artifactId>tomcat-embed-jasper</artifactId><scope>provided</scope></dependency>
 		<!-- jstl jsp页面使用jstl标签-->
