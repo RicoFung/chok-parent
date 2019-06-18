@@ -130,10 +130,13 @@
 			<dependency><groupId>net.sf.dozer</groupId><artifactId>dozer</artifactId><version>5.4.0</version></dependency>
 			<!-- logback-glef graylog -->
 			<dependency><groupId>de.siegmar</groupId><artifactId>logback-gelf</artifactId><version>1.1.0</version></dependency>
+			<!-- redisson -->
+			<dependency><groupId>org.redisson</groupId><artifactId>redisson</artifactId><version>3.11.0</version></dependency>
 			<!-- chok -->
 			<dependency><groupId>com.chok</groupId><artifactId>chok-common</artifactId><version>${project.version}</version></dependency>
 			<dependency><groupId>com.chok</groupId><artifactId>chok-util</artifactId><version>${project.version}</version></dependency>
 			<dependency><groupId>com.chok</groupId><artifactId>chok-redis</artifactId><version>${project.version}</version></dependency>
+			<dependency><groupId>com.chok</groupId><artifactId>chok-lock</artifactId><version>${project.version}</version></dependency>
 			<dependency><groupId>com.chok</groupId><artifactId>chok-devwork</artifactId><version>${project.version}</version></dependency>
 			<dependency><groupId>com.chok</groupId><artifactId>chok-security</artifactId><version>${project.version}</version></dependency>
 			<dependency><groupId>com.chok</groupId><artifactId>chok-cas-client</artifactId><version>${project.version}</version></dependency>
