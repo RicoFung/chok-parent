@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -229,7 +230,7 @@ public class CasAccessFilter implements Filter
 		            {
 		            	u = new CasLoginUser();
 		            	u.setId(Long.valueOf(attributes.get("id").toString()));
-		            	u.setM((HashMap<String, Object>) attributes);
+		            	u.setM((ConcurrentSkipListMap<String, Object>) attributes);
 		    			u.set("appId", appId);
 		    			session.setAttribute(LOGINER, u);
 		            } 
