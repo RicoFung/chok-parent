@@ -108,6 +108,9 @@
 			<!-- spring-boot atomikos 分布式事务 -->
 			<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-jta-atomikos</artifactId><version>${spring.boot.version}</version></dependency>
 		    <dependency><groupId>com.atomikos</groupId><artifactId>transactions-osgi</artifactId><version>3.9.3</version></dependency>
+			<!-- redisson-spring-boot-starter
+			 -->
+			<dependency><groupId>org.redisson</groupId><artifactId>redisson-spring-boot-starter</artifactId><version>3.11.0</version></dependency>
 			<!-- spring-boot druid -->
 			<dependency><groupId>com.alibaba</groupId><artifactId>druid-spring-boot-starter</artifactId><version>${druid.spring.boot.version}</version></dependency>
 			<!-- spring-boot cxf -->
@@ -130,13 +133,10 @@
 			<dependency><groupId>net.sf.dozer</groupId><artifactId>dozer</artifactId><version>5.4.0</version></dependency>
 			<!-- logback-glef graylog -->
 			<dependency><groupId>de.siegmar</groupId><artifactId>logback-gelf</artifactId><version>1.1.0</version></dependency>
-			<!-- redisson -->
-			<dependency><groupId>org.redisson</groupId><artifactId>redisson</artifactId><version>3.11.0</version></dependency>
 			<!-- chok -->
 			<dependency><groupId>com.chok</groupId><artifactId>chok-common</artifactId><version>${project.version}</version></dependency>
 			<dependency><groupId>com.chok</groupId><artifactId>chok-util</artifactId><version>${project.version}</version></dependency>
 			<dependency><groupId>com.chok</groupId><artifactId>chok-redis</artifactId><version>${project.version}</version></dependency>
-			<dependency><groupId>com.chok</groupId><artifactId>chok-lock</artifactId><version>${project.version}</version></dependency>
 			<dependency><groupId>com.chok</groupId><artifactId>chok-devwork</artifactId><version>${project.version}</version></dependency>
 			<dependency><groupId>com.chok</groupId><artifactId>chok-security</artifactId><version>${project.version}</version></dependency>
 			<dependency><groupId>com.chok</groupId><artifactId>chok-cas-client</artifactId><version>${project.version}</version></dependency>
