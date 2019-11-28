@@ -43,19 +43,19 @@ public abstract class BaseDao<T,PK>
 		return _statement + statementName;
 	}
 	
-	public void add(T po)
+	public int add(T po)
 	{
-		this.getSqlSession().insert(getStatementName("add"), po);
+		return this.getSqlSession().insert(getStatementName("add"), po);
 	}
 	
-	public void upd(T po)
+	public int upd(T po)
 	{
-		this.getSqlSession().update(getStatementName("upd"), po);
+		return this.getSqlSession().update(getStatementName("upd"), po);
 	}
 
-	public void del(PK id)
+	public int del(PK id)
 	{
-		this.getSqlSession().delete(getStatementName("del"), id);
+		return this.getSqlSession().delete(getStatementName("del"), id);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -109,19 +109,19 @@ public abstract class BaseDao<T,PK>
 		return result;
 	}
 	
-	public void add(String statementName, Object param)
+	public int add(String statementName, Object param)
 	{
-		this.getSqlSession().insert(getStatementName(statementName), param);
+		return this.getSqlSession().insert(getStatementName(statementName), param);
 	}
 	
-	public void del(String statementName, Object param)
+	public int del(String statementName, Object param)
 	{
-		this.getSqlSession().delete(getStatementName(statementName), param);
+		return this.getSqlSession().delete(getStatementName(statementName), param);
 	}
 	
-	public void upd(String statementName, Object param)
+	public int upd(String statementName, Object param)
 	{
-		this.getSqlSession().update(getStatementName(statementName), param);
+		return this.getSqlSession().update(getStatementName(statementName), param);
 	}
 	
 	public Object get(String statementName, Object param)
