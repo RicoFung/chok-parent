@@ -36,6 +36,7 @@
 		<module>chok-common</module>
 		<module>chok-util</module>
 		<module>chok-redis</module>
+		<module>chok-lock</module>
 		<module>chok-devwork</module>
 		<module>chok-cas-client</module>
 		<module>chok-sso-client</module>
