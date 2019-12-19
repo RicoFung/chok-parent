@@ -17,7 +17,7 @@ public @interface RedissonLock
 	 * 分布式锁的key
 	 * @return
 	 */
-	String keyName() default "";
+	String lockKey() default "";
 	
 	/**
 	 * 锁类型
@@ -29,7 +29,7 @@ public @interface RedissonLock
 	 * 加锁失败提示
 	 * @return
 	 */
-	String getLockFailMsg() default "get lock failed";
+	String lockFailMsg() default "get lock failed";
 	
 //	/**
 //	 * 尝试加锁的超时时间 默认一秒

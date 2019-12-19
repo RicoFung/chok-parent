@@ -38,7 +38,7 @@ public class RedissonLockAspect
 	{
 		Method method = ((MethodSignature) pjp.getSignature()).getMethod();
 		RedissonLock redissonLock = method.getAnnotation(RedissonLock.class);
-		String key = redissonLock.keyName();
+		String key = redissonLock.lockKey();
 
 		RLock lock = getLock(key, redissonLock);
 
@@ -64,8 +64,8 @@ public class RedissonLockAspect
 		else
 		{
 			if (log.isDebugEnabled())
-				log.debug("{} [{}]", redissonLock.getLockFailMsg(), key);
-			throw new Exception(redissonLock.getLockFailMsg());
+				log.debug("{} [{}]", redissonLock.lockFailMsg(), key);
+			throw new Exception(redissonLock.lockFailMsg());
 		}
 		return null;
 	}
