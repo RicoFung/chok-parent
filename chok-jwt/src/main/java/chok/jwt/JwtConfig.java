@@ -6,12 +6,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtConfig
 {
-
 	/**
 	 * 发行者名
 	 */
-    @Value("${jwt.name}")
-	private String name;
+    @Value("${jwt.issuer}")
+	private String issuer;
 
 	/**
 	 * base64加密密钥
@@ -31,9 +30,9 @@ public class JwtConfig
     @Value("${jwt.expires-util}")
     private String expiresUtil;
 
-	public String getName()
+	public String getIssuer()
 	{
-		return name;
+		return issuer;
 	}
 
 	public String getBase64Secret()

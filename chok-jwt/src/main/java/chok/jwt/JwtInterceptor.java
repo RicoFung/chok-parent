@@ -78,6 +78,10 @@ public class JwtInterceptor implements HandlerInterceptor
 		}
 
 		// 传递所需信息
+		if (log.isDebugEnabled())
+		{
+			log.debug("claims = {}", claims);
+		}
 		request.setAttribute("CLAIMS", claims);
 		return true;
 	}
