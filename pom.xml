@@ -44,6 +44,7 @@
 		<module>chok-cas-client</module>
 		<module>chok-sso-client</module>
 		<module>chok-security</module>
+		<module>chok-oauth2</module>
 	</modules>
 
 	<properties>
@@ -328,6 +329,11 @@
 			<dependency>
 				<groupId>com.chok</groupId>
 				<artifactId>chok-devwork</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.chok</groupId>
+				<artifactId>chok-oauth2</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
