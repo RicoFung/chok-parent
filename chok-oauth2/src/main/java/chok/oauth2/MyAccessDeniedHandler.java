@@ -30,7 +30,7 @@ public class MyAccessDeniedHandler implements AccessDeniedHandler
 		result.setSuccess(false);
 		result.setCode("402");
 		result.setMsg(accessDeniedException.getMessage());
-		result.put("exception", accessDeniedException.getCause());
+		result.put("exception", accessDeniedException.getCause()==null?accessDeniedException.getMessage():accessDeniedException.getCause());
 		result.setPath(request.getServletPath());
 		result.setTimestamp(String.valueOf(new Date().getTime()));
 		// 返回数据
