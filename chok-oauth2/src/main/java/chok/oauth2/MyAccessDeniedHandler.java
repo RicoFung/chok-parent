@@ -9,33 +9,33 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import chok.common.RestResult;
 
-public class MyOAuth2ExceptionEntryPoint implements AuthenticationEntryPoint
+public class MyAccessDeniedHandler implements AccessDeniedHandler
 {
-	private static Logger log = LoggerFactory.getLogger(MyOAuth2ExceptionEntryPoint.class);
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Override
-	public void commence(HttpServletRequest request, HttpServletResponse response,
-			AuthenticationException authException) throws IOException, ServletException
+	public void handle(HttpServletRequest request, HttpServletResponse response,
+			AccessDeniedException accessDeniedException) throws IOException, ServletException
 	{
 		ObjectMapper objectMapper = new ObjectMapper();
 		// 组装数据
 		RestResult result = new RestResult();
 		result.setSuccess(false);
-		result.setCode("401");
-		result.setMsg(authException.getMessage());
-		result.put("exception", authException.getCause());
+		result.setCode("402");
+		result.setMsg(accessDeniedException.getMessage());
+		result.put("exception", accessDeniedException.getCause());
 		result.setPath(request.getServletPath());
 		result.setTimestamp(String.valueOf(new Date().getTime()));
 		// 返回数据
 		response.setContentType("application/json;charset=UTF-8");
-		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		response.setStatus(402);
 		try
 		{
 			objectMapper.writeValue(response.getOutputStream(), result);
