@@ -41,9 +41,6 @@
 		<module>chok-lock</module>
 		<module>chok-jwt</module>
 		<module>chok-devwork</module>
-		<module>chok-cas-client</module>
-		<module>chok-sso-client</module>
-		<module>chok-security</module>
 		<module>chok-oauth2</module>
 	</modules>
 
@@ -58,6 +55,7 @@
 		<poi.version>3.15</poi.version>
 		<cxf.version>3.2.0</cxf.version>
 		<jwt.version>0.9.1</jwt.version>
+		<swagger.version>2.9.2</swagger.version>
 	</properties>
 
 	<dependencies>
@@ -305,12 +303,12 @@
 			<dependency>
 				<groupId>io.springfox</groupId>
 				<artifactId>springfox-swagger2</artifactId>
-				<version>2.9.2</version>
+				<version>${swagger.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>io.springfox</groupId>
 				<artifactId>springfox-swagger-ui</artifactId>
-				<version>2.9.2</version>
+				<version>${swagger.version}</version>
 			</dependency>
 			<!-- chok -->
 			<dependency>
@@ -346,21 +344,6 @@
 			<dependency>
 				<groupId>com.chok</groupId>
 				<artifactId>chok-oauth2</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.chok</groupId>
-				<artifactId>chok-security</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.chok</groupId>
-				<artifactId>chok-cas-client</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.chok</groupId>
-				<artifactId>chok-sso-client</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
