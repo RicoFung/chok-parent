@@ -2,14 +2,17 @@
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+	
+	<!-- 指定本地仓库路径 -->
 	<localRepository>C:\Dev\repo_default</localRepository>
-
+	
+	<!-- 指定远程中央仓库镜像 -->
 	<mirrors>
 		<mirror>
 			<id>aliyunmaven</id>
-			<mirrorOf>central</mirrorOf>
 			<name>阿里云中央仓库</name>
 			<url>https://maven.aliyun.com/repository/central/</url>
+			<mirrorOf>central</mirrorOf>
 		</mirror>
 	</mirrors>
 
