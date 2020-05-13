@@ -349,6 +349,15 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<!-- 配置EPO-NEXUS发布私库 -->
+	<distributionManagement>
+		<repository>
+			<id>maven-releases</id>
+			<name>Nexus Release Repository</name>
+			<url>http://nexus.moco.com:7000/repository/maven-releases/</url>
+		</repository>
+	</distributionManagement>
+
 	<repositories>
 		<repository>
 			<id>spring-milestones</id>
