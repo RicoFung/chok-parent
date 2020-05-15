@@ -117,8 +117,15 @@ public class TimeUtil
 		return result;
 	}
 	
+	public static String getCurrentMillTime()
+	{
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+		String formatStr =formatter.format(new Date());
+		return formatStr;
+	}
+	
 	public static void main(String[] args)
 	{
-		System.out.println(getCurrentTime());
+		System.out.println(getCurrentMillTime());
 	}
 }
