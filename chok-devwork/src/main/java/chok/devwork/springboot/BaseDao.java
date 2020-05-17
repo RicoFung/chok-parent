@@ -129,7 +129,7 @@ public abstract class BaseDao<T,PK>
 		return this.getSqlSession().selectOne(getStatementName(statementName), param);
 	}
 	
-	public List<?> query(String statementName, Object param)
+	public List<T> query(String statementName, Object param)
 	{
 		return this.getSqlSession().selectList(getStatementName(statementName), param);
 	}
