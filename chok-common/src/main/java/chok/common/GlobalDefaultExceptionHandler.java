@@ -29,6 +29,7 @@ public class GlobalDefaultExceptionHandler
 		log.error("Global Exception: {}", e);
 		RestResult r = new RestResult();
 		r.setSuccess(false);
+		r.setCode(RestConstants.ERROR_CODE1);
 		r.setMsg(e.toString());
 		return r;
 	}

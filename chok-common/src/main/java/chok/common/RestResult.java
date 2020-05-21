@@ -6,7 +6,7 @@ import java.util.Map;
 public class RestResult
 {
 	private boolean				success		= true;
-	private String				code		= "200";
+	private String				code		= RestConstants.SUCCESS_CODE;
 	private String				msg			= "";
 	private String				path		= "";
 	private String				timestamp	= "";
