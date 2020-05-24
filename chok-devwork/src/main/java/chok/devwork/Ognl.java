@@ -116,4 +116,16 @@ public class Ognl
 	{
 		return StringUtils.isBlank(str);
 	}
+	
+	public static boolean isNull(Object o)
+	{
+		if (o == null)
+			return true;
+		return false;
+	}
+	
+	public static boolean isNotNull(Object o)
+	{
+		return !isNull(o);
+	}
 }
