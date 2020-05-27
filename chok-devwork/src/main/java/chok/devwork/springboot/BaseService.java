@@ -9,17 +9,17 @@ public abstract class BaseService<T,PK>
 {
 	public abstract BaseDao<T, PK> getEntityDao();
 	
-	public void add(T po)
+	public int add(T po) throws Exception
 	{
-		getEntityDao().add(po);
+		return getEntityDao().add(po);
 	}
 
-	public void upd(T po) 
+	public int upd(T po) throws Exception
 	{
-		getEntityDao().upd(po);
+		return getEntityDao().upd(po);
 	}
 
-	public void del(PK[] ids) 
+	public void del(PK[] ids) throws Exception
 	{
 		for(PK id:ids)
 		{
