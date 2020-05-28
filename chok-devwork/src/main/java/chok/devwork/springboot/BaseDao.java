@@ -1,5 +1,6 @@
 package chok.devwork.springboot;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +63,14 @@ public abstract class BaseDao<T,PK>
 	public T get(PK id)
 	{
 		return (T) this.getSqlSession().selectOne(getStatementName("get"), id);
+	}
+	
+	public T getOnSelectFields(String[] selectFields, String pkKey, PK pkValue)
+	{
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("selectFields", selectFields);
+		param.put(pkKey, pkValue);
+		return (T) this.getSqlSession().selectOne(getStatementName("getOnSelectFields"), param);
 	}
 	
 	public List<T> query(Map<String, Object> m)

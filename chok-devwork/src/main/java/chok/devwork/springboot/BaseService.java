@@ -31,6 +31,12 @@ public abstract class BaseService<T,PK>
 	{
 		return (T) getEntityDao().get(id);
 	}
+	
+
+	public T getOnSelectFields(String[] selectFields, String pkKey, PK pkValue)
+	{
+		return getEntityDao().getOnSelectFields(selectFields, pkKey, pkValue);
+	}
 
 	public List<T> query(Map<String, Object> m) 
 	{
