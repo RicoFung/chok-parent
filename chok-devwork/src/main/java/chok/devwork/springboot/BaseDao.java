@@ -65,12 +65,43 @@ public abstract class BaseDao<T,PK>
 		return (T) this.getSqlSession().selectOne(getStatementName("get"), id);
 	}
 	
+	public Map<String, Object> getMap(Map<String, Object> m)
+	{
+		return getMap("getMap", m);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getMap(String statementName, Map<String, Object> m)
+	{
+		return (Map<String, Object>) this.getSqlSession().selectOne(getStatementName(statementName), m);
+	}
+	
 	public T getOnSelectFields(String[] selectFields, String pkKey, PK pkValue)
 	{
+		return getOnSelectFields("getOnSelectFields", "selectFields", selectFields, pkKey, pkValue);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public T getOnSelectFields(String statementName, String selectFieldsKey, String[] selectFieldsValue, String pkKey, PK pkValue)
+	{
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("selectFields", selectFields);
+		param.put(selectFieldsKey, selectFieldsValue);
 		param.put(pkKey, pkValue);
-		return (T) this.getSqlSession().selectOne(getStatementName("getOnSelectFields"), param);
+		return (T) this.getSqlSession().selectOne(getStatementName(statementName), param);
+	}
+	
+	public Map<String, Object> getMapOnSelectFields(String[] selectFields, String pkKey, PK pkValue)
+	{
+		return getMapOnSelectFields("getMapOnSelectFields", "selectFields", selectFields, pkKey, pkValue);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getMapOnSelectFields(String statementName, String selectFieldsKey, String[] selectFieldsValue, String pkKey, PK pkValue)
+	{
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put(selectFieldsKey, selectFieldsValue);
+		param.put(pkKey, pkValue);
+		return (Map<String, Object>) this.getSqlSession().selectOne(getStatementName(statementName), param);
 	}
 	
 	public List<T> query(Map<String, Object> m)
@@ -78,9 +109,14 @@ public abstract class BaseDao<T,PK>
 		return this.getSqlSession().selectList(getStatementName("query"), m);
 	}
 	
-	public List queryMap(Map<String, Object> m)
+	public List<Object> queryMap(Map<String, Object> m)
 	{
 		return this.getSqlSession().selectList(getStatementName("queryMap"), m);
+	}
+	
+	public List<Map<String, Object>> queryMap(String statementName, Map<String, Object> m)
+	{
+		return this.getSqlSession().selectList(getStatementName(statementName), m);
 	}
 	
 	public int getCount(Map<String, Object> m)
