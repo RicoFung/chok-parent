@@ -109,6 +109,18 @@ public abstract class BaseDao<T,PK>
 		return this.getSqlSession().selectList(getStatementName("query"), m);
 	}
 	
+	public List<T> queryOnSelectFields(String[] selectFields, Map<String, Object> param)
+	{
+		return queryOnSelectFields("queryOnSelectFields", "selectFields", selectFields, param);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<T> queryOnSelectFields(String statementName, String selectFieldsKey, String[] selectFieldsValue, Map<String, Object> param)
+	{
+		param.put(selectFieldsKey, selectFieldsValue);
+		return (List<T>) this.getSqlSession().selectList(getStatementName(statementName), param);
+	}
+	
 	public List<Object> queryMap(Map<String, Object> m)
 	{
 		return this.getSqlSession().selectList(getStatementName("queryMap"), m);
@@ -117,6 +129,17 @@ public abstract class BaseDao<T,PK>
 	public List<Map<String, Object>> queryMap(String statementName, Map<String, Object> m)
 	{
 		return this.getSqlSession().selectList(getStatementName(statementName), m);
+	}
+	
+	public List<Map<String, Object>> queryMapOnSelectFields(String[] selectFields, Map<String, Object> param)
+	{
+		return queryMapOnSelectFields("queryMapOnSelectFields", "selectFields", selectFields, param);
+	}
+	
+	public List<Map<String, Object>> queryMapOnSelectFields(String statementName, String selectFieldsKey, String[] selectFieldsValue, Map<String, Object> param)
+	{
+		param.put(selectFieldsKey, selectFieldsValue);
+		return this.getSqlSession().selectList(getStatementName(statementName), param);
 	}
 	
 	public int getCount(Map<String, Object> m)
