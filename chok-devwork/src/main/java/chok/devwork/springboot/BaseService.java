@@ -19,12 +19,14 @@ public abstract class BaseService<T,PK>
 		return getEntityDao().upd(po);
 	}
 
-	public void del(PK[] ids) throws Exception
+	public int del(PK[] ids) throws Exception
 	{
+		int r = 0;
 		for(PK id:ids)
 		{
-			getEntityDao().del(id);
+			r += getEntityDao().del(id);
 		}
+		return r;
 	}
 
 	public T get(PK id)
