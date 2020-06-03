@@ -52,12 +52,24 @@ public class POIUtil
 	 */
 	public static List<String[]> readExcel(MultipartFile file) throws IOException
 	{
+		return readExcel(file, null);
+	}
+	
+	/**
+	 * 读入EXCEL
+	 * @param file
+	 * @param sheetSize 读取多少个sheet的数据。为null时，读取所有sheet
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<String[]> readExcel(MultipartFile file, Integer sheetSize) throws IOException
+	{
 		// 检查文件
 		checkFile(file);
 		// 获得Workbook工作薄对象
 		Workbook workbook = getWorkBook(file);
 		// 读取到List<String[]>
-		return workbookToList(workbook);
+		return workbookToList(workbook, sheetSize);
 	}
 
 	public static List<String[]> readExcel(String filePath) throws Exception
@@ -78,11 +90,27 @@ public class POIUtil
 	 */
 	private static List<String[]> workbookToList(Workbook workbook) throws IOException
 	{
+		return workbookToList(workbook, null);
+	}
+	
+	/**
+	 * 
+	 * @param workbook
+	 * @param sheetSize
+	 * @return
+	 * @throws IOException
+	 */
+	private static List<String[]> workbookToList(Workbook workbook, Integer sheetSize) throws IOException
+	{
 		// 创建返回对象，把每行中的值作为一个数组，所有行作为一个集合返回
 		List<String[]> list = new ArrayList<String[]>();
 		if (workbook != null)
 		{
-			for (int sheetNum = 0; sheetNum < workbook.getNumberOfSheets(); sheetNum++)
+			if (sheetSize == null)
+			{
+				sheetSize = workbook.getNumberOfSheets();
+			}
+			for (int sheetNum = 0; sheetNum < sheetSize; sheetNum++)
 			{
 				// 获得当前sheet工作表
 				Sheet sheet = workbook.getSheetAt(sheetNum);
