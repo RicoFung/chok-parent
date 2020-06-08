@@ -9,13 +9,17 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -23,6 +27,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -41,8 +46,8 @@ public class POIUtil
 	private final static String	XLSX				= "xlsx";
 	private final static String	MSG_FORMAT_ERR		= "excel格式错误！";
 	private final static String	MSG_FILE_NOT_FOUND	= "文件不存在！";
-	private static int			titleFontSize		= 20;
-	private static int			headerFontSize		= 14;
+	private static int			titleFontSize		= 14;
+	private static int			headerFontSize		= 10;
 
 	/**
 	 * 读入EXCEL
@@ -170,7 +175,7 @@ public class POIUtil
 		{
 			XSSFWorkbook wbook = new XSSFWorkbook();
 			XSSFSheet wsheet = wbook.createSheet(sheetName);
-			wsheet.setDefaultColumnWidth(50);
+			wsheet.setDefaultColumnWidth(15);
 			XSSFCellStyle titleCellStyle = getTitleStyle(wbook);
 			XSSFCellStyle headerCellStyle = getHeaderStyle(wbook);
 			XSSFCellStyle contentCellStyle = getContentStyle(wbook);
@@ -234,6 +239,19 @@ public class POIUtil
 					for (int j = 0; j < dataColumnArray.length; j++)
 					{
 						v = (String) ((Map<?, ?>) list.get(i)).get(dataColumnArray[j]);
+						if (v != null)
+							rContent.createCell(columnIndex).setCellValue(new XSSFRichTextString(v));
+						else
+							rContent.createCell(columnIndex).setCellValue(new XSSFRichTextString(""));
+						rContent.getCell(j).setCellStyle(contentCellStyle);
+						columnIndex++;
+					}
+				}
+				else if (HashMap.class.getName().equals(list.get(i).getClass().getSuperclass().getName()))
+				{
+					for (int j = 0; j < dataColumnArray.length; j++)
+					{
+						v = (String) ((HashMap<?, ?>) list.get(i)).get(dataColumnArray[j]);
 						if (v != null)
 							rContent.createCell(columnIndex).setCellValue(new XSSFRichTextString(v));
 						else
@@ -451,6 +469,9 @@ public class POIUtil
 	private static XSSFCellStyle getTitleStyle(XSSFWorkbook wbook)
 	{
 		XSSFCellStyle titleCellStyle = wbook.createCellStyle();
+		// 背景色
+		titleCellStyle.setFillForegroundColor(IndexedColors.SKY_BLUE.getIndex());
+		titleCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 		// 居中
 		titleCellStyle.setAlignment(HorizontalAlignment.CENTER);
 		titleCellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
@@ -466,12 +487,15 @@ public class POIUtil
 	private static XSSFCellStyle getHeaderStyle(XSSFWorkbook wbook)
 	{
 		XSSFCellStyle headerCellStyle = wbook.createCellStyle();
+		// 背景色
+		headerCellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
+		headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 		// 居中
 		headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
 		headerCellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
 		// 字体
 		XSSFFont font = wbook.createFont();
-		font.setFontName("仿宋_GB2312");
+		font.setFontName("Arial");
 		font.setFontHeightInPoints((short) headerFontSize);
 		headerCellStyle.setFont(font);
 		return headerCellStyle;
