@@ -162,10 +162,34 @@ public class TimeUtil
 		return formatStr;
 	}
 	
+	/**
+	 * 日期格式字符串转换成时间戳
+	 * 
+	 * @param date
+	 *            字符串日期
+	 * @param format
+	 *            如：yyyy-MM-dd HH:mm:ss
+	 * @return
+	 */
+	public static String date2TimeStamp(String date_str, String format)
+	{
+		try
+		{
+			SimpleDateFormat sdf = new SimpleDateFormat(format);
+			return String.valueOf(sdf.parse(date_str).getTime());
+		}
+		catch (Exception e)
+		{
+			return "";
+		}
+	} 
+	
 	public static void main(String[] args)
 	{
 //		System.out.println(getCurrentMillTime());
 //		System.out.println(getCurrentTime("yyyyMMdd"));
-		System.out.println(getCurrentTimeMonthsAgo("yyyyMMdd", 3));
+//		System.out.println(getCurrentTimeMonthsAgo("yyyyMMdd", 3));
+		System.out.println(date2TimeStamp("", "yyyy.MM.dd"));
+		System.out.println(System.currentTimeMillis());
 	}
 }
