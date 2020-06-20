@@ -36,6 +36,7 @@
 
 	<modules>
 		<module>chok-common</module>
+		<module>chok-component</module>
 		<module>chok-util</module>
 		<module>chok-redis</module>
 		<module>chok-lock</module>
@@ -314,6 +315,11 @@
 			<dependency>
 				<groupId>com.chok</groupId>
 				<artifactId>chok-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.chok</groupId>
+				<artifactId>chok-component</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
