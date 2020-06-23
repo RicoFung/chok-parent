@@ -109,6 +109,11 @@ public abstract class BaseDao<T,PK>
 		return this.getSqlSession().selectList(getStatementName("query"), m);
 	}
 	
+	public List<T> queryOnSelectFields(Map<String, Object> param)
+	{
+		return query("queryOnSelectFields", param);
+	}
+	
 	public List<T> queryOnSelectFields(String[] selectFields, Map<String, Object> param)
 	{
 		return queryOnSelectFields("queryOnSelectFields", "selectFields", selectFields, param);
@@ -129,6 +134,11 @@ public abstract class BaseDao<T,PK>
 	public List<Map<String, Object>> queryMap(String statementName, Map<String, Object> m)
 	{
 		return this.getSqlSession().selectList(getStatementName(statementName), m);
+	}
+	
+	public List<Map<String, Object>> queryMapOnSelectFields(Map<String, Object> param)
+	{
+		return queryMap("queryMapOnSelectFields", param);
 	}
 	
 	public List<Map<String, Object>> queryMapOnSelectFields(String[] selectFields, Map<String, Object> param)
