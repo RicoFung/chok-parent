@@ -76,6 +76,11 @@ public abstract class BaseDao<T,PK>
 		return (Map<String, Object>) this.getSqlSession().selectOne(getStatementName(statementName), m);
 	}
 	
+	public Object getDynamic(Map<String, Object> param)
+	{
+		return this.get("getDynamic", param);
+	}
+	
 	public T getOnSelectFields(String[] selectFields, String pkKey, PK pkValue)
 	{
 		return getOnSelectFields("getOnSelectFields", "selectFields", selectFields, pkKey, pkValue);
