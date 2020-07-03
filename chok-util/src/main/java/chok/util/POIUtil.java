@@ -15,7 +15,6 @@ import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -27,7 +26,6 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -251,7 +249,7 @@ public class POIUtil
 				{
 					for (int j = 0; j < dataColumnArray.length; j++)
 					{
-						v = (String) ((HashMap<?, ?>) list.get(i)).get(dataColumnArray[j]);
+						v = String.valueOf(((HashMap<?, ?>) list.get(i)).get(dataColumnArray[j]));
 						if (v != null)
 							rContent.createCell(columnIndex).setCellValue(new XSSFRichTextString(v));
 						else
