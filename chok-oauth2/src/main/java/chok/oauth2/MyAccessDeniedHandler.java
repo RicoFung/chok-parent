@@ -14,6 +14,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import chok.common.RestConstants;
 import chok.common.RestResult;
 
 public class MyAccessDeniedHandler implements AccessDeniedHandler
@@ -28,7 +29,7 @@ public class MyAccessDeniedHandler implements AccessDeniedHandler
 		// 组装数据
 		RestResult result = new RestResult();
 		result.setSuccess(false);
-		result.setCode("402");
+		result.setCode(RestConstants.ERROR_CODE3);
 		result.setMsg(accessDeniedException.getMessage());
 		result.put("exception", accessDeniedException.getCause()==null?accessDeniedException.getMessage():accessDeniedException.getCause());
 		result.setPath(request.getServletPath());

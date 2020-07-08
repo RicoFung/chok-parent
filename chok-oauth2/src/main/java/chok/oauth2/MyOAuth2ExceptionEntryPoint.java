@@ -14,6 +14,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import chok.common.RestConstants;
 import chok.common.RestResult;
 
 public class MyOAuth2ExceptionEntryPoint implements AuthenticationEntryPoint
@@ -28,7 +29,7 @@ public class MyOAuth2ExceptionEntryPoint implements AuthenticationEntryPoint
 		// 组装数据
 		RestResult result = new RestResult();
 		result.setSuccess(false);
-		result.setCode("401");
+		result.setCode(RestConstants.ERROR_CODE2);
 		result.setMsg(authException.getMessage());
 		result.put("exception", authException.getCause());
 		result.setPath(request.getServletPath());

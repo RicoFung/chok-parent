@@ -40,6 +40,44 @@ public class TimeUtil
 		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.CHINA);
 		return sdf.format(cal.getTime());
 	}
+	
+	/**
+	 * 返回N个月前的日期
+	 * @param n
+	 * @return
+	 */
+	public static String getCurrentDateMonthsAgo(int n)
+	{
+		return getCurrentTimeMonthsAgo("yyyy-MM-dd", n);
+	}
+	
+	/**
+	 * 返回N个月前的时间
+	 * @param n
+	 * @return
+	 */
+	public static String getCurrentTimeMonthsAgo(int n)
+	{
+		return getCurrentTimeMonthsAgo("yyyy-MM-dd HH:mm:ss", n);
+	}
+	
+	/**
+	 * 返回N个月前的时间
+	 * @param qty
+	 * @return
+	 */
+	public static String getCurrentTimeMonthsAgo(String format, int n)
+	{
+		Date dNow = new Date();   //当前时间
+		Date dBefore = new Date();
+		Calendar calendar = Calendar.getInstance(); //得到日历
+		calendar.setTime(dNow);//把当前时间赋给日历
+		calendar.add(Calendar.MONTH, -n);  //设置为前3月
+		dBefore = calendar.getTime();   //得到前3月的时间
+		SimpleDateFormat sdf=new SimpleDateFormat(format); //设置时间格式
+		String defaultStartDate = sdf.format(dBefore);    //格式化前3月的时间
+		return defaultStartDate;
+	}
 
 	/**
 	 * 格式化时间
@@ -117,8 +155,41 @@ public class TimeUtil
 		return result;
 	}
 	
+	public static String getCurrentMillTime()
+	{
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+		String formatStr =formatter.format(new Date());
+		return formatStr;
+	}
+	
+	/**
+	 * 日期格式字符串转换成时间戳
+	 * 
+	 * @param date
+	 *            字符串日期
+	 * @param format
+	 *            如：yyyy-MM-dd HH:mm:ss
+	 * @return
+	 */
+	public static String date2TimeStamp(String date_str, String format)
+	{
+		try
+		{
+			SimpleDateFormat sdf = new SimpleDateFormat(format);
+			return String.valueOf(sdf.parse(date_str).getTime());
+		}
+		catch (Exception e)
+		{
+			return "";
+		}
+	} 
+	
 	public static void main(String[] args)
 	{
-		System.out.println(getCurrentTime());
+//		System.out.println(getCurrentMillTime());
+//		System.out.println(getCurrentTime("yyyyMMdd"));
+//		System.out.println(getCurrentTimeMonthsAgo("yyyyMMdd", 3));
+		System.out.println(date2TimeStamp("", "yyyy.MM.dd"));
+		System.out.println(System.currentTimeMillis());
 	}
 }

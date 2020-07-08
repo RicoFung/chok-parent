@@ -36,6 +36,7 @@
 
 	<modules>
 		<module>chok-common</module>
+		<module>chok-component</module>
 		<module>chok-util</module>
 		<module>chok-redis</module>
 		<module>chok-lock</module>
@@ -318,6 +319,11 @@
 			</dependency>
 			<dependency>
 				<groupId>com.chok</groupId>
+				<artifactId>chok-component</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.chok</groupId>
 				<artifactId>chok-util</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -348,6 +354,22 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<!-- 针对EPO-NEXUS私库发布 -->
+	<distributionManagement>
+		<repository>
+			<id>maven-releases</id>
+			<name>Nexus Release Repository</name>
+			<url>http://nexus.moco.com:7000/repository/maven-releases/</url>
+			<layout>default</layout>
+		</repository>
+		<snapshotRepository>
+			<id>maven-snapshots</id>
+			<name>Nexus Snapshot Repository</name>
+			<url>http://nexus.moco.com:7000/repository/maven-snapshots/</url>
+			<layout>legacy</layout>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<repositories>
 		<repository>
