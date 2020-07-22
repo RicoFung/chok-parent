@@ -13,10 +13,20 @@ public abstract class BaseService<T,PK>
 	{
 		return getEntityDao().add(po);
 	}
+	
+	public int addBatch(List<T> list) throws Exception
+	{
+		return getEntityDao().addBatch(list);
+	}
 
 	public int upd(T po) throws Exception
 	{
 		return getEntityDao().upd(po);
+	}
+	
+	public int updBatch(List<T> list) throws Exception
+	{
+		return getEntityDao().updBatch(list);
 	}
 
 	public int del(PK[] ids) throws Exception
@@ -34,15 +44,19 @@ public abstract class BaseService<T,PK>
 		return (T) getEntityDao().get(id);
 	}
 	
-//
-//	public T getOnSelectFields(String[] selectFields, String pkKey, PK pkValue)
-//	{
-//		return getEntityDao().getOnSelectFields(selectFields, pkKey, pkValue);
-//	}
+	public Object getDynamic(Map<String, Object> param)
+	{
+		return getEntityDao().getDynamic(param);
+	}
 
 	public List<T> query(Map<String, Object> m) 
 	{
 		return getEntityDao().query(m);
+	}
+	
+	public List<T> queryDynamic(Map<String, Object> m) 
+	{
+		return getEntityDao().queryDynamic(m);
 	}
 	
 	public List queryMap(Map<String, Object> m)

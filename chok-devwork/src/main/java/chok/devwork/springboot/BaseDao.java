@@ -47,10 +47,20 @@ public abstract class BaseDao<T,PK>
 	{
 		return this.getSqlSession().insert(getStatementName("add"), po);
 	}
+
+	public int addBatch(List<T> list)
+	{
+		return this.add("addBatch", list);
+	}
 	
 	public int upd(T po)
 	{
 		return this.getSqlSession().update(getStatementName("upd"), po);
+	}
+	
+	public int updBatch(List<T> list)
+	{
+		return this.upd("updBatch", list);
 	}
 
 	public int del(PK id)

@@ -7,7 +7,7 @@ public class RestResult
 {
 	private boolean				success		= true;
 	private String				code		= RestConstants.SUCCESS_CODE;
-	private String				msg			= "";
+	private String				msg			= "操作成功！";
 	private String				path		= "";
 	private String				timestamp	= "";
 	private Map<Object, Object>	data		= new HashMap<Object, Object>();
