@@ -18,6 +18,11 @@ public abstract class BaseService<T,PK>
 	{
 		return getEntityDao().addBatch(list);
 	}
+	
+	public int addBatch(List<T> list, int size) throws Exception
+	{
+		return getEntityDao().addBatch(list, size);
+	}
 
 	public int upd(T po) throws Exception
 	{
@@ -27,6 +32,11 @@ public abstract class BaseService<T,PK>
 	public int updBatch(List<T> list) throws Exception
 	{
 		return getEntityDao().updBatch(list);
+	}
+	
+	public int updBatch(List<T> list, int size) throws Exception
+	{
+		return getEntityDao().updBatch(list, size);
 	}
 
 	public int del(PK[] ids) throws Exception
