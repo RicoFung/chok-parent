@@ -190,7 +190,10 @@ public class POIUtil
 			// 写入标题
 			if (title != null && !title.equals("") && title.length() > 0)
 			{
-				wsheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headerNameArray.length - 1));
+				if (headerNameArray.length > 1)
+				{
+					wsheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headerNameArray.length - 1));
+				}
 				XSSFCell c = wsheet.createRow(writingRow).createCell(0);
 				c.setCellStyle(titleCellStyle);
 				c.setCellValue(new XSSFRichTextString(title));
