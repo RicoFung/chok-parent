@@ -1,27 +1,39 @@
 package chok.devwork.springboot;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import chok.common.RestConstants;
 import chok.common.RestResult;
 import chok.util.POIUtil;
 import chok.util.TimeUtil;
 
 public class BaseRestController<T>
 {
+    @Autowired
+    private Validator validator;
+    
 	protected RestResult restResult;
 
 	protected ObjectMapper restMapper;
@@ -45,6 +57,16 @@ public class BaseRestController<T>
 		}
 		return validMsgList;
 	}
+	
+	protected List<String> getValidMsgListBySet(Set<ConstraintViolation<?>> validSet)
+	{
+		List<String> validMsgList = new ArrayList<String>();
+		for (ConstraintViolation<?> constraintViolation : (Set<ConstraintViolation<?>>)validSet) 
+		{
+			validMsgList.add(constraintViolation.getMessage());
+		}
+		return validMsgList;
+	}
 
 	protected String getValidMsgs(BindingResult validResult)
 	{
@@ -55,6 +77,40 @@ public class BaseRestController<T>
 			validMsgsBuilder.append(validMsg + ";");
 		}
 		return StringUtils.removeEnd(validMsgsBuilder.toString(), ";");
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected String getValidMsgsBySet(Object validSet)
+	{
+		StringBuilder validMsgsBuilder = new StringBuilder();
+		List<String> validMsgList = getValidMsgListBySet((Set<ConstraintViolation<?>>) validSet);
+		for (String validMsg : validMsgList)
+		{
+			validMsgsBuilder.append(validMsg + ";");
+		}
+		return StringUtils.removeEnd(validMsgsBuilder.toString(), ";");
+	}
+	
+	protected RestResult validImportBefore(MultipartFile file, String json, Class<?> clazz) throws JsonParseException, JsonMappingException, IOException
+	{
+		restResult = new RestResult();
+		// 校验file
+		if (file == null)
+		{
+			restResult.setSuccess(false);
+			restResult.setCode(RestConstants.ERROR_CODE1);
+			restResult.setMsg("file不能为空！");
+		}
+		// 校验json
+		Object jsonDTO = restMapper.readValue(json, clazz);
+		Set<ConstraintViolation<Object>> validSet = validator.validate(jsonDTO);
+		if (validSet.size() > 0) 
+		{
+			restResult.setSuccess(false);
+			restResult.setCode(RestConstants.ERROR_CODE1);
+			restResult.setMsg(getValidMsgsBySet(validSet));
+		}
+		return restResult;
 	}
 	
 	public void export(List<?> list, String fileName, String title, String headerNames, String dataColumns, String exportType)
