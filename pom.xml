@@ -57,6 +57,7 @@
 		<cxf.version>3.2.0</cxf.version>
 		<jwt.version>0.9.1</jwt.version>
 		<swagger.version>2.9.2</swagger.version>
+		<guava.version>29.0-jre</guava.version>
 	</properties>
 
 	<dependencies>
@@ -171,7 +172,7 @@
 		<dependency>
 		    <groupId>com.google.guava</groupId>
 		    <artifactId>guava</artifactId>
-		    <version>29.0-jre</version>
+		    <version>${guava.version}</version>
 		</dependency>
 		<!-- junit <dependency><groupId>junit</groupId><artifactId>junit</artifactId><scope>test</scope></dependency> -->
 	</dependencies>
