@@ -91,6 +91,19 @@ public class BaseRestController<T>
 		return StringUtils.removeEnd(validMsgsBuilder.toString(), ";");
 	}
 	
+	protected RestResult validImportBefore(MultipartFile file)
+	{
+		restResult = new RestResult();
+		// 校验file
+		if (file == null)
+		{
+			restResult.setSuccess(false);
+			restResult.setCode(RestConstants.ERROR_CODE1);
+			restResult.setMsg("file不能为空！");
+		}
+		return restResult;
+	}
+	
 	protected RestResult validImportBefore(MultipartFile file, String json, Class<?> clazz) throws JsonParseException, JsonMappingException, IOException
 	{
 		restResult = new RestResult();
@@ -102,13 +115,16 @@ public class BaseRestController<T>
 			restResult.setMsg("file不能为空！");
 		}
 		// 校验json
-		Object jsonDTO = restMapper.readValue(json, clazz);
-		Set<ConstraintViolation<Object>> validSet = validator.validate(jsonDTO);
-		if (validSet.size() > 0) 
+		if (json != null)
 		{
-			restResult.setSuccess(false);
-			restResult.setCode(RestConstants.ERROR_CODE1);
-			restResult.setMsg(getValidMsgsBySet(validSet));
+			Object jsonDTO = restMapper.readValue(json, clazz);
+			Set<ConstraintViolation<Object>> validSet = validator.validate(jsonDTO);
+			if (validSet.size() > 0) 
+			{
+				restResult.setSuccess(false);
+				restResult.setCode(RestConstants.ERROR_CODE1);
+				restResult.setMsg(getValidMsgsBySet(validSet));
+			}
 		}
 		return restResult;
 	}
