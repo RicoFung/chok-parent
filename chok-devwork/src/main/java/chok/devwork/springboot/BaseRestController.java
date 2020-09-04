@@ -146,8 +146,8 @@ public class BaseRestController<T>
 						list);
 				
 				response.reset();// 清空输出流
-				response.setHeader("Content-disposition", "attachment; filename="
-						+ fileName
+				response.setHeader("Content-Disposition", "attachment; filename="
+						+ java.net.URLEncoder.encode(fileName, "UTF-8")
 						+ "_"
 						+ TimeUtil.formatDate(new Date(), "yyyyMMdd_HHmmss") + "." +"xlsx");
 				if(exportType.equals("xlsx"))
