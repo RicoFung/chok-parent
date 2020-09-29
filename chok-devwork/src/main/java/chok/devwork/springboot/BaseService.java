@@ -9,32 +9,64 @@ public abstract class BaseService<T,PK>
 {
 	public abstract BaseDao<T, PK> getEntityDao();
 	
-	public void add(T po)
+	public int add(T po) throws Exception
 	{
-		getEntityDao().add(po);
+		return getEntityDao().add(po);
+	}
+	
+	public int addBatch(List<T> list) throws Exception
+	{
+		return getEntityDao().addBatch(list);
+	}
+	
+	public int addBatch(List<T> list, int size) throws Exception
+	{
+		return getEntityDao().addBatch(list, size);
 	}
 
-	public void upd(T po) 
+	public int upd(T po) throws Exception
 	{
-		getEntityDao().upd(po);
+		return getEntityDao().upd(po);
+	}
+	
+	public int updBatch(List<T> list) throws Exception
+	{
+		return getEntityDao().updBatch(list);
+	}
+	
+	public int updBatch(List<T> list, int size) throws Exception
+	{
+		return getEntityDao().updBatch(list, size);
 	}
 
-	public void del(PK[] ids) 
+	public int del(PK[] ids) throws Exception
 	{
+		int r = 0;
 		for(PK id:ids)
 		{
-			getEntityDao().del(id);
+			r += getEntityDao().del(id);
 		}
+		return r;
 	}
 
 	public T get(PK id)
 	{
 		return (T) getEntityDao().get(id);
 	}
+	
+	public Object getDynamic(Map<String, Object> param)
+	{
+		return getEntityDao().getDynamic(param);
+	}
 
 	public List<T> query(Map<String, Object> m) 
 	{
 		return getEntityDao().query(m);
+	}
+	
+	public List<T> queryDynamic(Map<String, Object> m) 
+	{
+		return getEntityDao().queryDynamic(m);
 	}
 	
 	public List queryMap(Map<String, Object> m)

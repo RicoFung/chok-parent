@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+	
+	<!-- 定义私有jar包发布及下载的Maven仓库 -->
+	<servers>
+		<server>
+			<!--这是server的id（注意不是用户登陆的id），该id与distributionManagement中repository元素的id相匹配。 -->
+			<id>maven-releases</id>
+			<!-- nexus 用户密码 -->
+			<username>zhuojun.feng</username>
+			<password>123456789</password>
+		</server>
+		<server>
+			<!--这是server的id（注意不是用户登陆的id），该id与distributionManagement中repository元素的id相匹配。 -->
+			<id>maven-snapshots</id>
+			<!-- nexus 用户密码 -->
+			<username>zhuojun.feng</username>
+			<password>123456789</password>
+		</server>
+	</servers>
+	
+	<!-- 给定仓库的下载镜像。 -->
+	<mirrors>
+		<mirror>
+			<!-- 该镜像的唯一标识符。id用来区分不同的mirror元素。 -->
+			<id>epo-repo</id>
+			<!-- 镜像名称 -->
+			<name>Epo Readable Name for this Mirror.</name>
+			<!-- 该镜像的URL。构建系统会优先考虑使用该URL，而非使用默认的服务器URL。 -->
+			<url>http://nexus.moco.com/repository/maven-public/</url>
+			<!-- 被镜像的服务器的id。例如，如果我们要设置了一个Maven中央仓库（http://repo.maven.apache.org/maven2/）的镜像，就需要将该元素设置成central。这必须和中央仓库的id central完全一致。 -->
+			<mirrorOf>central</mirrorOf>
+		</mirror>
+	</mirrors>
+</settings>

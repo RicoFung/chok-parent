@@ -31,24 +31,23 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.5.RELEASE</version>
+		<version>2.1.8.RELEASE</version>
 	</parent>
 
 	<modules>
 		<module>chok-common</module>
+		<module>chok-component</module>
 		<module>chok-util</module>
 		<module>chok-redis</module>
 		<module>chok-lock</module>
 		<module>chok-jwt</module>
 		<module>chok-devwork</module>
-		<module>chok-cas-client</module>
-		<module>chok-sso-client</module>
-		<module>chok-security</module>
+		<module>chok-oauth2</module>
 	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring.boot.version>2.1.5.RELEASE</spring.boot.version>
+		<spring.boot.version>2.1.8.RELEASE</spring.boot.version>
 		<spring.security.oauth2.version>2.3.4.RELEASE</spring.security.oauth2.version>
 		<spring.security.oauth2.autoconfigure.version>2.0.1.RELEASE</spring.security.oauth2.autoconfigure.version>
 		<mybatis.spring.boot.version>2.0.1</mybatis.spring.boot.version>
@@ -57,6 +56,8 @@
 		<poi.version>3.15</poi.version>
 		<cxf.version>3.2.0</cxf.version>
 		<jwt.version>0.9.1</jwt.version>
+		<swagger.version>2.9.2</swagger.version>
+		<guava.version>29.0-jre</guava.version>
 	</properties>
 
 	<dependencies>
@@ -92,8 +93,9 @@
 			<artifactId>mybatis-spring-boot-starter</artifactId>
 			<version>${mybatis.spring.boot.version}</version>
 		</dependency>
-		<!-- mybatis-redis <dependency><groupId>redis.clients</groupId><artifactId>jedis</artifactId></dependency> 
-			<dependency><groupId>org.mybatis.caches</groupId><artifactId>mybatis-redis</artifactId><version>1.0.0-beta2</version></dependency> -->
+		<!-- mybatis-redis <dependency> <groupId>redis.clients</groupId> <artifactId>jedis</artifactId> 
+			</dependency> <dependency> <groupId>org.mybatis.caches</groupId> <artifactId>mybatis-redis</artifactId> 
+			<version>1.0.0-beta2</version> </dependency> -->
 		<!-- spring-boot jdbc -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -111,6 +113,10 @@
 			<artifactId>jstl</artifactId>
 		</dependency>
 		<!-- 其他工具包 -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
@@ -154,9 +160,19 @@
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
 		<dependency>
+		    <groupId>commons-beanutils</groupId>
+		    <artifactId>commons-beanutils</artifactId>
+		    <version>1.9.4</version>
+		</dependency>
+		<dependency>
 			<groupId>ognl</groupId>
 			<artifactId>ognl</artifactId>
 			<version>3.2.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>${guava.version}</version>
 		</dependency>
 		<!-- junit <dependency><groupId>junit</groupId><artifactId>junit</artifactId><scope>test</scope></dependency> -->
 	</dependencies>
@@ -295,10 +311,32 @@
 				<artifactId>logback-gelf</artifactId>
 				<version>1.1.0</version>
 			</dependency>
+			<!--swagger -->
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger2</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
+			<!-- quartz -->
+			<dependency>
+			    <groupId>org.springframework.boot</groupId>
+			    <artifactId>spring-boot-starter-quartz</artifactId>
+			    <version>2.3.2.RELEASE</version>
+			</dependency>
 			<!-- chok -->
 			<dependency>
 				<groupId>com.chok</groupId>
 				<artifactId>chok-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.chok</groupId>
+				<artifactId>chok-component</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -328,21 +366,27 @@
 			</dependency>
 			<dependency>
 				<groupId>com.chok</groupId>
-				<artifactId>chok-security</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.chok</groupId>
-				<artifactId>chok-cas-client</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.chok</groupId>
-				<artifactId>chok-sso-client</artifactId>
+				<artifactId>chok-oauth2</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<!-- 针对EPO-NEXUS私库发布 -->
+	<distributionManagement>
+		<repository>
+			<id>maven-releases</id>
+			<name>Nexus Release Repository</name>
+			<url>http://nexus.moco.com:7000/repository/maven-releases/</url>
+			<layout>default</layout>
+		</repository>
+		<snapshotRepository>
+			<id>maven-snapshots</id>
+			<name>Nexus Snapshot Repository</name>
+			<url>http://nexus.moco.com:7000/repository/maven-snapshots/</url>
+			<layout>legacy</layout>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<repositories>
 		<repository>
