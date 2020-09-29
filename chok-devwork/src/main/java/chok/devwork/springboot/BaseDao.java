@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
+import com.google.common.collect.Lists;
+
 import chok.devwork.Page;
 
 
@@ -47,10 +49,44 @@ public abstract class BaseDao<T,PK>
 	{
 		return this.getSqlSession().insert(getStatementName("add"), po);
 	}
+
+	public int addBatch(List<T> list)
+	{
+		return this.add("addBatch", list);
+	}
+	
+	public int addBatch(List<T> list, int size)
+	{
+		// Lambda 修改外部变量时，外部变量必须定义为数组
+		final int[] r = {0};
+		List<List<T>> parts = Lists.partition(list, size);
+		parts.stream().forEach(pList ->
+		{
+			r[0] += this.addBatch(pList);
+		});
+		return r[0];
+	}
 	
 	public int upd(T po)
 	{
 		return this.getSqlSession().update(getStatementName("upd"), po);
+	}
+	
+	public int updBatch(List<T> list)
+	{
+		return this.upd("updBatch", list);
+	}
+	
+	public int updBatch(List<T> list, int size)
+	{
+		// Lambda 修改外部变量时，外部变量必须定义为数组
+		final int[] r = {0};
+		List<List<T>> parts = Lists.partition(list, size);
+		parts.stream().forEach(pList ->
+		{
+			r[0] += this.updBatch(pList);
+		});
+		return r[0];
 	}
 
 	public int del(PK id)

@@ -57,6 +57,7 @@
 		<cxf.version>3.2.0</cxf.version>
 		<jwt.version>0.9.1</jwt.version>
 		<swagger.version>2.9.2</swagger.version>
+		<guava.version>29.0-jre</guava.version>
 	</properties>
 
 	<dependencies>
@@ -159,9 +160,19 @@
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
 		<dependency>
+		    <groupId>commons-beanutils</groupId>
+		    <artifactId>commons-beanutils</artifactId>
+		    <version>1.9.4</version>
+		</dependency>
+		<dependency>
 			<groupId>ognl</groupId>
 			<artifactId>ognl</artifactId>
 			<version>3.2.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>${guava.version}</version>
 		</dependency>
 		<!-- junit <dependency><groupId>junit</groupId><artifactId>junit</artifactId><scope>test</scope></dependency> -->
 	</dependencies>
@@ -310,6 +321,12 @@
 				<groupId>io.springfox</groupId>
 				<artifactId>springfox-swagger-ui</artifactId>
 				<version>${swagger.version}</version>
+			</dependency>
+			<!-- quartz -->
+			<dependency>
+			    <groupId>org.springframework.boot</groupId>
+			    <artifactId>spring-boot-starter-quartz</artifactId>
+			    <version>2.3.2.RELEASE</version>
 			</dependency>
 			<!-- chok -->
 			<dependency>
