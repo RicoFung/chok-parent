@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.util.IOUtils;
@@ -475,7 +476,8 @@ public class POIUtil
 		titleCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 		// 居中
 		titleCellStyle.setAlignment(HorizontalAlignment.CENTER);
-		titleCellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
+		titleCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+//		titleCellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
 		// 字体
 		XSSFFont titleFont = wbook.createFont();
 		titleFont.setFontName("仿宋_GB2312");
@@ -493,7 +495,8 @@ public class POIUtil
 		headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 		// 居中
 		headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
-		headerCellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
+		headerCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+//		headerCellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
 		// 字体
 		XSSFFont font = wbook.createFont();
 		font.setFontName("Arial");
@@ -508,7 +511,8 @@ public class POIUtil
 		XSSFCellStyle contentCellStyle = wbook.createCellStyle();
 		// 居中
 		contentCellStyle.setAlignment(HorizontalAlignment.RIGHT);
-		contentCellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
+		contentCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+//		contentCellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
 		// 字体
 		XSSFFont font = wbook.createFont();
 		font.setFontName("Arial");
