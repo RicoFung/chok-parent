@@ -38,6 +38,7 @@ public class BaseRestController<T>
 
 	protected ObjectMapper restMapper;
 	
+	protected HttpServletRequest request;
 	protected HttpServletResponse response;
 
 	@ModelAttribute
@@ -45,6 +46,7 @@ public class BaseRestController<T>
 	{
 		this.restResult = new RestResult();
 		this.restMapper = new ObjectMapper();
+		this.request = request;
 		this.response = response;
 	}
 
