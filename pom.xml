@@ -387,7 +387,7 @@
 			<layout>legacy</layout>
 		</snapshotRepository>
 	</distributionManagement>
-
+<!-- 暂时移除spring-milestones，否则导致jenkins下游project编译时找不到ojdbc依赖
 	<repositories>
 		<repository>
 			<id>spring-milestones</id>
@@ -398,7 +398,8 @@
 			</snapshots>
 		</repository>
 	</repositories>
-
+ -->
+ 
 	<build>
 		<!-- 指定打包时还需包含的资源文件，若不配置会遗漏 -->
 		<resources>
