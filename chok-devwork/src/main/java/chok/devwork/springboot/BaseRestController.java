@@ -38,6 +38,7 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperRunManager;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
@@ -191,15 +192,15 @@ public class BaseRestController<T>
 	}
 	
 	/**
-	 * jasperreports导出
+	 * 导出JRMapList
 	 * @param bizDatasetKey
 	 * @param bizDatasetValue
 	 * @param jasperFileName
 	 * @param rptFileName
-	 * @param format
+	 * @param rptFileFormat ("pdf"/"xlsx"/"html")
 	 * @throws Exception
 	 */
-	public void jasperExport(String bizDatasetKey, List<Map<String, ?>> bizDatasetValue,  String jasperFileName, String rptFileName, String format) throws Exception 
+	public void expJRMapList(String bizDatasetKey, List<Map<String, ?>> bizDatasetValue, String jasperFileName, String rptFileName, String rptFileFormat) throws Exception 
 	{
 		// 0.定义pdf参数集
 		Map<String, Object> rptParams = new HashMap<String, Object>();
@@ -222,16 +223,65 @@ public class BaseRestController<T>
 		// 3.输出文件
 		// 按格式生成
 		File rptFile = new File(jasperPath);
-		switch (format)
+		switch (rptFileFormat)
 		{
 			case "pdf":
 				pdf(rptFileName, rptFile.getPath(), rptParams, rptDataSource);
 				break;
+			case "xlsx":
+				xlsx(rptFileName, rptFile.getPath(), rptParams, rptDataSource);
+				break;
 			case "html":
 				html(rptFile.getPath(), rptParams, rptDataSource);
 				break;
+			default:
+				pdf(rptFileName, rptFile.getPath(), rptParams, rptDataSource);
+				break;
+		}
+	}
+	
+	/**
+	 * 导出JRBeanList
+	 * @param bizDatasetKey
+	 * @param bizDatasetValue
+	 * @param jasperFileName
+	 * @param rptFileName
+	 * @param rptFileFormat ("pdf"/"xlsx"/"html")
+	 * @throws Exception
+	 */
+	public void expJRBeanList(String bizDatasetKey, List<?> bizDatasetValue, String jasperFileName, String rptFileName, String rptFileFormat) throws Exception 
+	{
+		// 0.定义pdf参数集
+		Map<String, Object> rptParams = new HashMap<String, Object>();
+		// 1.转换Dataset数据集参数
+		// 业务数据转pdf数据
+		List<Object> rptData = new ArrayList<Object>();
+		// 1）往下标0写入空行数据（由于jasper dataset从索引1开始遍历数据，所以先插入一条空行）
+		rptData.add(0, null);
+		// 2）从下标1开始写入数据
+		rptData.addAll(bizDatasetValue);
+		// 转换数据源
+		JRDataSource rptDataSource = new JRBeanCollectionDataSource(rptData);
+		rptParams.put(bizDatasetKey, rptDataSource);
+		
+		// 2.编译报表模板
+		String jrxmlPath = ResourceUtils.getFile("classpath:templates/rpt/" + jasperFileName + ".jrxml").getAbsolutePath();
+		String jasperPath = ResourceUtils.getFile("classpath:templates/rpt/" + jasperFileName + ".jasper").getAbsolutePath();
+		JasperCompileManager.compileReportToFile(jrxmlPath);
+		
+		// 3.输出文件
+		// 按格式生成
+		File rptFile = new File(jasperPath);
+		switch (rptFileFormat)
+		{
+			case "pdf":
+				pdf(rptFileName, rptFile.getPath(), rptParams, rptDataSource);
+				break;
 			case "xlsx":
 				xlsx(rptFileName, rptFile.getPath(), rptParams, rptDataSource);
+				break;
+			case "html":
+				html(rptFile.getPath(), rptParams, rptDataSource);
 				break;
 			default:
 				pdf(rptFileName, rptFile.getPath(), rptParams, rptDataSource);
