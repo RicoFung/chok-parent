@@ -58,6 +58,7 @@
 		<jwt.version>0.9.1</jwt.version>
 		<swagger.version>2.9.2</swagger.version>
 		<guava.version>29.0-jre</guava.version>
+		<jasper.version>6.16.0</jasper.version>
 	</properties>
 
 	<dependencies>
@@ -327,6 +328,26 @@
 			    <groupId>org.springframework.boot</groupId>
 			    <artifactId>spring-boot-starter-quartz</artifactId>
 			    <version>2.3.2.RELEASE</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports -->
+			<dependency>
+				<groupId>net.sf.jasperreports</groupId>
+				<artifactId>jasperreports</artifactId>
+				<version>${jasper.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports-fonts -->
+			<dependency>
+				<groupId>net.sf.jasperreports</groupId>
+				<artifactId>jasperreports-fonts</artifactId>
+				<version>${jasper.version}</version>
+			</dependency>
+			<!-- 自制jasperreports字体包。两种方案 -->
+			<!-- 1.添加至本地jar命令：mvn install:install-file -Dfile=font-msyh.jar -DgroupId=com.chok -DartifactId=font-msyh -Dversion=1.0 -Dpackaging=jar -->
+			<!-- 2.上传至nexus私服 -->
+			<dependency>
+				<groupId>com.chok</groupId>
+				<artifactId>font-msyh</artifactId>
+				<version>1.0</version>
 			</dependency>
 			<!-- chok -->
 			<dependency>
