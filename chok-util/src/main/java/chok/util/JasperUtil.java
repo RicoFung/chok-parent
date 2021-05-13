@@ -40,31 +40,39 @@ public class JasperUtil
 	/**
 	 * 导出
 	 * @param response
-	 * @param jasperFileName
-	 * @param rptFileName
-	 * @param rptFileFormat
-	 * @param rptBizDatasetKV
-	 * @param rptBizDatasetClazzes
+	 * @param jasperFileName 报表模板文件名
+	 * @param rptFileName 报表文件名
+	 * @param rptFileFormat 报表格式
+	 * @param rptBizDatasetKV 基础控件数据集KV
+	 * @param rptBizDatasetTableKV Table控件数据集KV
+	 * @param rptBizDatasetTableClazzes Table控件数据集类型数组
 	 * @throws Exception
 	 */
-	public static void export(HttpServletResponse response, String jasperFileName, String rptFileName, String rptFileFormat, LinkedHashMap<String, List<?>> rptBizDatasetKV, Class<?>... rptBizDatasetClazzes) throws Exception
+	public static void export(HttpServletResponse response, String jasperFileName, String rptFileName, String rptFileFormat, Map<String, ?> rptBizDatasetKV, LinkedHashMap<String, List<?>> rptBizDatasetTableKV, Class<?>... rptBizDatasetTableClazzes) throws Exception
 	{
 		// 校验
-		if (rptBizDatasetKV.size() != rptBizDatasetClazzes.length)
+		if (rptBizDatasetTableKV.size() != rptBizDatasetTableClazzes.length)
 		{
-			throw new Exception("业务数据集合长度与数据类型长度不一致！");
+			throw new Exception("参数[rptBizDatasetTableKV]与[rptBizDatasetTableClazzes]长度不一致！");
 		}
 		
-		// 0.定义rpt参数集
-		Map<String, Object> rptParams = new HashMap<String, Object>();
+		// 0.基础控件数据采用JRDataSource来传参
+		JRDataSource rptBizDatasetDS = new JREmptyDataSource();
+		if (rptBizDatasetKV != null)
+		{
+			List<Map<String, ?>> rptBizDatasetKVs = new ArrayList<Map<String, ?>>();
+			rptBizDatasetKVs.add(rptBizDatasetKV);
+			rptBizDatasetDS = new JRMapCollectionDataSource(rptBizDatasetKVs);
+		}
 		
-		// 1.
+		// 1.Table控件数据采用Map<>来传参
+		Map<String, Object> rptBizDatasetTableParams = new HashMap<String, Object>();
 		int index = 0;
-		for (Entry<String, List<?>> entry : rptBizDatasetKV.entrySet()) {
-			String bizDatasetK = entry.getKey();
-			List<?> bizDatasetV = entry.getValue();
+		for (Entry<String, List<?>> entry : rptBizDatasetTableKV.entrySet()) {
+			String bizDatasetTableK = entry.getKey();
+			List<?> bizDatasetTableV = entry.getValue();
 			JRDataSource subRptDataSource = null;
-			String clazzName = rptBizDatasetClazzes[index].getName();
+			String clazzName = rptBizDatasetTableClazzes[index].getName();
 			if (clazzName == null) 
 			{
 				throw new RuntimeException("数据类型不能为空！");
@@ -75,7 +83,7 @@ public class JasperUtil
 				// 1）往下标0写入空行数据（由于jasper dataset从索引1开始遍历数据，所以先插入一条空行）
 //				subRptData.add(0, null);
 				// 2）从下标1开始写入数据
-				subRptData.addAll(bizDatasetV);
+				subRptData.addAll(bizDatasetTableV);
 				subRptDataSource = new JRBeanCollectionDataSource(subRptData);
 			}
 			else if (Map.class.getName().equals(clazzName)) 
@@ -84,7 +92,7 @@ public class JasperUtil
 				// 1）往下标0写入空行数据（由于jasper dataset从索引1开始遍历数据，所以先插入一条空行）
 //				subRptData.add(0, null);
 				// 2）从下标1开始写入数据
-				subRptData.addAll((Collection<? extends Map<String, ?>>) bizDatasetV);
+				subRptData.addAll((Collection<? extends Map<String, ?>>) bizDatasetTableV);
 				subRptDataSource = new JRMapCollectionDataSource(subRptData);
 			}
 			else if (HashMap.class.getName().equals(clazzName)) 
@@ -93,22 +101,19 @@ public class JasperUtil
 				// 1）往下标0写入空行数据（由于jasper dataset从索引1开始遍历数据，所以先插入一条空行）
 //				subRptData.add(0, null);
 				// 2）从下标1开始写入数据
-				subRptData.addAll((Collection<? extends Map<String, ?>>) bizDatasetV);
+				subRptData.addAll((Collection<? extends Map<String, ?>>) bizDatasetTableV);
 				subRptDataSource = new JRMapCollectionDataSource(subRptData);
 			} 
 			else
 			{
 				throw new RuntimeException("数据类型不匹配！");
 			}
-			rptParams.put(bizDatasetK, subRptDataSource);
+			rptBizDatasetTableParams.put(bizDatasetTableK, subRptDataSource);
 			index++;
 		}
 		
-		// 2.默认置空主数据源
-		JRDataSource rptDataSource = new JREmptyDataSource();
-		
 		// 3.按文件格式导出
-		exportByFormat(response, jasperFileName, rptFileName, rptParams, rptDataSource, rptFileFormat);
+		exportByFormat(response, jasperFileName, rptFileName, rptBizDatasetTableParams, rptBizDatasetDS, rptFileFormat);
 	}
 	
 	/**
@@ -116,27 +121,27 @@ public class JasperUtil
 	 * @param response
 	 * @param jasperFileName 报表模板文件名
 	 * @param rptFileName 报表文件名
-	 * @param rptParams 报表参数
-	 * @param rptDataSource 报表数据源
+	 * @param rptBizDatasetTableParams 报表Table数据参数
+	 * @param rptBizDatasetDS 报表数据源
 	 * @param rptFileFormat 报表格式
 	 * @throws Exception
 	 */
-	public static void exportByFormat(HttpServletResponse response, String jasperFileName, String rptFileName, Map<String, Object> rptParams, JRDataSource rptDataSource, String rptFileFormat) throws Exception
+	public static void exportByFormat(HttpServletResponse response, String jasperFileName, String rptFileName, Map<String, Object> rptBizDatasetTableParams, JRDataSource rptBizDatasetDS, String rptFileFormat) throws Exception
 	{
 		File rptFile = compileReportToFile(jasperFileName);
 		switch (rptFileFormat)
 		{
 			case "pdf":
-				pdf(response, rptFileName, rptFile.getPath(), rptParams, rptDataSource);
+				pdf(response, rptFileName, rptFile.getPath(), rptBizDatasetTableParams, rptBizDatasetDS);
 				break;
 			case "xlsx":
-				xlsx(response, rptFileName, rptFile.getPath(), rptParams, rptDataSource);
+				xlsx(response, rptFileName, rptFile.getPath(), rptBizDatasetTableParams, rptBizDatasetDS);
 				break;
 			case "html":
-				html(response, rptFile.getPath(), rptParams, rptDataSource);
+				html(response, rptFile.getPath(), rptBizDatasetTableParams, rptBizDatasetDS);
 				break;
 			default:
-				pdf(response, rptFileName, rptFile.getPath(), rptParams, rptDataSource);
+				pdf(response, rptFileName, rptFile.getPath(), rptBizDatasetTableParams, rptBizDatasetDS);
 				break;
 		}
 	}
@@ -160,14 +165,15 @@ public class JasperUtil
 	/**
 	 * 生成PDF
 	 * @param response
-	 * @param reportFilePath
-	 * @param param
-	 * @param mainDs
+	 * @param rptFileName
+	 * @param rptFilePath
+	 * @param rptBizDatasetTableParams
+	 * @param rptBizDatasetDS
 	 * @throws Exception
 	 */
-	private static void pdf(HttpServletResponse response, String rptFileName, String rptFilePath, Map<String, Object> param, JRDataSource mainDs) throws Exception
+	private static void pdf(HttpServletResponse response, String rptFileName, String rptFilePath, Map<String, Object> rptBizDatasetTableParams, JRDataSource rptBizDatasetDS) throws Exception
 	{
-		byte[] bytes = JasperRunManager.runReportToPdf(rptFilePath, param, mainDs);
+		byte[] bytes = JasperRunManager.runReportToPdf(rptFilePath, rptBizDatasetTableParams, rptBizDatasetDS);
 		String fileName = rptFileName + "_" + TimeUtil.formatDate(new Date(), "yyyyMMdd_HHmmss")+".pdf";
 	    fileName = new String(fileName.getBytes("utf-8"), "ISO_8859_1");
 	    response.reset();// 清空输出流
@@ -182,16 +188,16 @@ public class JasperUtil
 	/**
 	 * 生成HTML
 	 * @param response
-	 * @param reportFilePath
-	 * @param param
-	 * @param mainDs
+	 * @param rptFilePath
+	 * @param rptBizDatasetTableParams
+	 * @param rptBizDatasetDS
 	 * @throws Exception
 	 */
-	private static void html(HttpServletResponse response, String rptFilePath, Map<String, Object> param, JRDataSource mainDs) throws Exception
+	private static void html(HttpServletResponse response, String rptFilePath, Map<String, Object> rptBizDatasetTableParams, JRDataSource rptBizDatasetDS) throws Exception
 	{
 		response.reset();// 清空输出流
 		response.setContentType("text/html;charset=UTF-8");
-		JasperPrint jasperPrint = JasperFillManager.fillReport(rptFilePath, param, mainDs);
+		JasperPrint jasperPrint = JasperFillManager.fillReport(rptFilePath, rptBizDatasetTableParams, rptBizDatasetDS);
 		HtmlExporter exporter = new HtmlExporter(DefaultJasperReportsContext.getInstance());
 		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 		exporter.setExporterOutput(new SimpleHtmlExporterOutput(response.getWriter()));
@@ -201,19 +207,19 @@ public class JasperUtil
 	/**
 	 * 生成XLSX
 	 * @param response
-	 * @param name
-	 * @param reportFilePath
-	 * @param param
-	 * @param mainDs
+	 * @param rptFileName
+	 * @param rptFilePath
+	 * @param rptBizDatasetTableParams
+	 * @param rptBizDatasetDS
 	 * @throws Exception
 	 */
-	private static void xlsx(HttpServletResponse response, String rptFileName, String rptFilePath, Map<String, Object> param, JRDataSource mainDs) throws Exception
+	private static void xlsx(HttpServletResponse response, String rptFileName, String rptFilePath, Map<String, Object> rptBizDatasetTableParams, JRDataSource rptBizDatasetDS) throws Exception
 	{
 		String fileName = rptFileName + "_" + TimeUtil.formatDate(new Date(), "yyyyMMdd_HHmmss")+".xlsx";
 		response.reset();// 清空输出流
 		response.setHeader("Content-disposition", "attachment; filename=" + fileName);
 		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8");
-		JasperPrint jasperPrint = JasperFillManager.fillReport(rptFilePath, param, mainDs);
+		JasperPrint jasperPrint = JasperFillManager.fillReport(rptFilePath, rptBizDatasetTableParams, rptBizDatasetDS);
 		JRXlsxExporter exporter = new JRXlsxExporter();
 		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));

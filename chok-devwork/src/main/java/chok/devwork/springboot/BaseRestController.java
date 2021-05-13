@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
@@ -176,39 +177,40 @@ public class BaseRestController<T>
 	}
 	
 	/**
-	 * 导出_包含单个Tabel
+	 * 导出_包含单个Tabel（不含基础控件）
 	 * @param jasperFileName 模板文件名
 	 * @param rptFileName 生成文件名
 	 * @param rptFileFormat 生成文件格式(包括："pdf"/"xlsx"/"html")
-	 * @param rptBizDatasetK 业务数据集KEY
-	 * @param rptBizDatasetV 业务数据集VAL
-	 * @param rptBizDatasetClazz 数据类型 (三种可选：Object.class/Map.class/HashMap.class)
+	 * @param rptBizDatasetTableK Table控件业务数据集KEY
+	 * @param rptBizDatasetTableV Table控件业务数据集VAL
+	 * @param rptBizDatasetTableClazz Table控件数据类型 (三种可选：Object.class/Map.class/HashMap.class)
 	 * @throws Exception
 	 */
-	public void exportRptOneTable(String jasperFileName, String rptFileName, String rptFileFormat, String rptBizDatasetK, List<?> rptBizDatasetV, Class<?> rptBizDatasetClazz) throws Exception 
+	public void exportRptOneTable(String jasperFileName, String rptFileName, String rptFileFormat, String rptBizDatasetTableK, List<?> rptBizDatasetTableV, Class<?> rptBizDatasetTableClazz) throws Exception 
 	{
-		LinkedHashMap<String, List<?>> rptBizDatasetKV = new LinkedHashMap<String, List<?>>()
+		LinkedHashMap<String, List<?>> rptBizDatasetTableKV = new LinkedHashMap<String, List<?>>()
 		{
 			private static final long serialVersionUID = 1L;
 			{
-				put(rptBizDatasetK, rptBizDatasetV);
+				put(rptBizDatasetTableK, rptBizDatasetTableV);
 			}
 		};
-		exportRptMultiTable(jasperFileName, rptFileName, rptFileFormat, rptBizDatasetKV, rptBizDatasetClazz);
+		exportRptMultiTable(jasperFileName, rptFileName, rptFileFormat, null, rptBizDatasetTableKV, rptBizDatasetTableClazz);
 	}
 	
 	/**
-	 * 导出_包含多个Tabel
+	 * 导出_包含多个Tabel控件（含基础控件）
 	 * @param rptTemplateName 模板文件名
 	 * @param rptFileName 生成文件名
 	 * @param rptFileFormat 生成文件格式(包括："pdf"/"xlsx"/"html")
-	 * @param rptBizDatasetKV（多）业务数据集（KEY-VALUE）
-	 * @param rptBizDatasetClazzes （多）数据类型 (三种可选：Object.class/Map.class/HashMap.class)
+	 * @param rptBizDatasetKV 基础控件业务数据集（KEY-VALUE）
+	 * @param rptBizDatasetTableKV Table控件业务数据集（KEY-VALUE）
+	 * @param rptBizDatasetTableClazzes Table控件数据类型 (三种可选：Object.class/Map.class/HashMap.class)
 	 * @throws Exception
 	 */
-	public void exportRptMultiTable(String rptTemplateName, String rptFileName, String rptFileFormat, LinkedHashMap<String, List<?>> rptBizDatasetKV, Class<?>... rptBizDatasetClazzes) throws Exception 
+	public void exportRptMultiTable(String rptTemplateName, String rptFileName, String rptFileFormat, Map<String, ?> rptBizDatasetKV, LinkedHashMap<String, List<?>> rptBizDatasetTableKV, Class<?>... rptBizDatasetTableClazzes) throws Exception 
 	{
-		JasperUtil.export(response, rptTemplateName, rptFileName, rptFileFormat, rptBizDatasetKV, rptBizDatasetClazzes);
+		JasperUtil.export(response, rptTemplateName, rptFileName, rptFileFormat, rptBizDatasetKV, rptBizDatasetTableKV, rptBizDatasetTableClazzes);
 	}
 	
 }
