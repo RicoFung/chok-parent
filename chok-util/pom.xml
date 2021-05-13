@@ -29,5 +29,18 @@
 		<dependency><groupId>org.apache.poi</groupId><artifactId>poi-ooxml</artifactId></dependency>
 		<dependency><groupId>org.apache.poi</groupId><artifactId>poi-ooxml-schemas</artifactId></dependency>
 		<dependency><groupId>org.apache.poi</groupId><artifactId>poi-scratchpad</artifactId></dependency>
+		<!-- jasperreports -->
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-fonts</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.chok</groupId>
+			<artifactId>font-msyh</artifactId>
+		</dependency>
 	</dependencies>
 </project>
