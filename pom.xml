@@ -6,7 +6,7 @@
 	<!--本Project識別 -->
 	<groupId>com.chok</groupId>
 	<artifactId>chok-parent</artifactId>
-	<version>1.0</version>
+	<version>2.1.8</version>
 	<!--表示打包Project的型態,可能為Jar、war、ear或pom，若是使用了android 則為apk -->
 	<packaging>pom</packaging>
 	<!--以下是給工具看的,主要是本Project的資訊 -->
@@ -387,7 +387,19 @@
 			<layout>legacy</layout>
 		</snapshotRepository>
 	</distributionManagement>
-
+<!-- 暂时移除spring-milestones，否则导致jenkins下游project编译时找不到ojdbc依赖
+	<repositories>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/libs-milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+ -->
+ 
 	<build>
 		<!-- 指定打包时还需包含的资源文件，若不配置会遗漏 -->
 		<resources>
