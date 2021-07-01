@@ -2,6 +2,7 @@ package chok.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Map.Entry;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
 
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
@@ -150,8 +152,8 @@ public class JasperUtil
 	 * 编译至文件
 	 * @param jasperFileName
 	 * @return
-	 * @throws FileNotFoundException
 	 * @throws JRException
+	 * @throws IOException 
 	 */
 	private static File compileReportToFile(String jasperFileName) throws FileNotFoundException, JRException
 	{
