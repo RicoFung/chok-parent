@@ -58,7 +58,7 @@
 		<jwt.version>0.9.1</jwt.version>
 		<swagger.version>2.9.2</swagger.version>
 		<guava.version>29.0-jre</guava.version>
-		<jasper.version>6.16.0</jasper.version>
+		<jasper.version>6.17.0</jasper.version>
 		
 		<fastjson.version>1.2.46</fastjson.version>
 		<commons-logging.version>1.2</commons-logging.version>
