@@ -20,6 +20,7 @@ import chok.common.RestResult;
 import chok.util.POIUtil;
 import chok.util.TimeUtil;
 
+@Deprecated
 public class BaseController<T>
 {
 	private final Logger log = LoggerFactory.getLogger(getClass());
