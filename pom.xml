@@ -91,11 +91,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
-		<!-- spring-boot-devtools 用于开发环境热部署 -->
+		<!-- spring-boot-devtools 用于开发环境热部署
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
+		 -->
 		<!-- spring-boot-starter-tomcat 打包时，把内嵌的tomcat排除掉 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -118,22 +119,35 @@
 			<artifactId>mybatis-spring-boot-starter</artifactId>
 			<version>${mybatis.spring.boot.version}</version>
 		</dependency>
-		<!-- mybatis-redis <dependency> <groupId>redis.clients</groupId> <artifactId>jedis</artifactId> 
-			</dependency> <dependency> <groupId>org.mybatis.caches</groupId> <artifactId>mybatis-redis</artifactId> 
-			<version>1.0.0-beta2</version> </dependency> -->
+		<!-- mybatis-redis 
+		<dependency> 
+			<groupId>redis.clients</groupId> 
+			<artifactId>jedis</artifactId> 
+		</dependency> 
+		<dependency> 
+			<groupId>org.mybatis.caches</groupId> 
+			<artifactId>mybatis-redis</artifactId> 
+			<version>1.0.0-beta2</version> 
+			</dependency> 
+		-->
 		<!-- spring-boot jdbc -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 		<!-- tomcat-embed-jasper 用于编译jsp -->
-		<!-- 升级至 springboot 2.3.0 会造成包冲突 jaxb-* <dependency> <groupId>org.apache.tomcat.embed</groupId> 
-			<artifactId>tomcat-embed-jasper</artifactId> <scope>provided</scope> </dependency> -->
-		<!-- jstl jsp页面使用jstl标签 -->
+		<!-- 升级至 springboot 2.3.0 会造成包冲突 jaxb-* 
+		<dependency> 
+			<groupId>org.apache.tomcat.embed</groupId> 
+			<artifactId>tomcat-embed-jasper</artifactId> 
+			<scope>provided</scope> 
+		</dependency> -->
+		<!-- jstl jsp页面使用jstl标签 
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 		</dependency>
+		-->
 		<!-- 其他工具包 -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -240,22 +254,21 @@
 	        <dependency>
 	            <groupId>org.springframework.boot</groupId>
 	            <artifactId>spring-boot-starter-security</artifactId>
-	            <version>2.6.1</version>
+				<version>${spring.boot.version}</version>
 	        </dependency>      
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-oauth2-client</artifactId>
-				<version>2.6.1</version>
+				<version>${spring.boot.version}</version>
 			</dependency>
 			<dependency>
 			    <groupId>org.springframework.boot</groupId>
 			    <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-			    <version>2.6.1</version>
+				<version>${spring.boot.version}</version>
 			</dependency>
 	        <dependency>
 	            <groupId>org.springframework.security</groupId>
 	            <artifactId>spring-security-oauth2-authorization-server</artifactId>
-	        	<!--  截至现在版本  -->
 	            <version>0.2.0</version>
 	        </dependency>
 	        
