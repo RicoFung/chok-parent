@@ -6,7 +6,7 @@
 	<!--本Project識別 -->
 	<groupId>com.chok</groupId>
 	<artifactId>chok-parent</artifactId>
-	<version>1.1.4</version>
+	<version>1.1.5</version>
 	<!--表示打包Project的型態,可能為Jar、war、ear或pom，若是使用了android 則為apk -->
 	<packaging>pom</packaging>
 	<!--以下是給工具看的,主要是本Project的資訊 -->

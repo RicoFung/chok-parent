@@ -2,6 +2,9 @@ package chok.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -184,12 +187,35 @@ public class TimeUtil
 		}
 	} 
 	
+	/**
+	 * 校验日期天数范围
+	 * @param startDateString "yyyy-MM-dd HH:mm:ss"
+	 * @param endDateString "yyyy-MM-dd HH:mm:ss"
+	 * @param dayRange Long
+	 */
+	public static Boolean validDaysRange(String startDateString, String endDateString, Integer daysRange)
+	{
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDate startDate = LocalDate.parse(startDateString, formatter);
+		LocalDate endDate = LocalDate.parse(endDateString, formatter);
+	    long daysDiff = ChronoUnit.DAYS.between(startDate, endDate);
+	    if (daysDiff > daysRange)
+	    {
+	    	return false;
+	    }
+	    return true;
+	}
+	
 	public static void main(String[] args)
 	{
 //		System.out.println(getCurrentMillTime());
 //		System.out.println(getCurrentTime("yyyyMMdd"));
 //		System.out.println(getCurrentTimeMonthsAgo("yyyyMMdd", 3));
-		System.out.println(date2TimeStamp("", "yyyy.MM.dd"));
-		System.out.println(System.currentTimeMillis());
+		
+//		System.out.println(date2TimeStamp("", "yyyy.MM.dd"));
+//		System.out.println(System.currentTimeMillis());
+		
+		Boolean result = validDaysRange("2022-02-14 00:00:00", "2022-03-14 00:00:00", 10);
+		System.out.println(result);
 	}
 }
